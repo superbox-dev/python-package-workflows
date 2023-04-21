@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  workflow_call:
+
+jobs:
+  config:
+    name: Read config
+    uses: ./.github/workflows/config.yml
+
+  prepare_build:
+    name: Prepare build
+    uses: ./.github/workflows/prepare-build.yml
+
+  build_python_package:
+    name: Build python package
+    needs:
+      - config
+      - prepare_build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Set up Python ${{ needs.config.outputs.latest_python }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ needs.config.outputs.latest_python }}
+      - name: Build package
+        run: |
+          python -m pip install --user build twine
+          PACKAGE_VERSION="${{ needs.prepare_build.outputs.package_version }}" python -m build
+          mkdir -pv output
+          mv -v dist/* output/
+      - name: Upload compressed source file
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ needs.prepare_build.outputs.package_name }}-${{ needs.prepare_build.outputs.package_version }}.tar.gz
+          path: ${{ github.workspace }}/output/${{ needs.prepare_build.outputs.package_name }}-${{ needs.prepare_build.outputs.package_version }}.tar.gz  # yamllint disable-line rule:line-length
+      - name: Upload wheel file
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ needs.prepare_build.outputs.package_alternate_name }}-${{ needs.prepare_build.outputs.package_version }}-py3-none-any.whl  # yamllint disable-line rule:line-length
+          path: ${{ github.workspace }}/output/${{ needs.prepare_build.outputs.package_alternate_name }}-${{ needs.prepare_build.outputs.package_version }}-py3-none-any.whl  # yamllint disable-line rule:line-length

@@ -1,2 +1,3 @@
-# python-package-workflows
-GitHub workflows for python packages
+# Reuseable workflows
+
+A collection of reusable GitHub workflows for python packages.
