@@ -1,0 +1,19 @@
+name: Checks
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  code_analyse:
+    name: Code analyse
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v1
+      - name: Install requirements
+        run: pip install yamllint
+      - name: Lint with yamllint
+        run: |
+          yamllint --version
+          yamllint $(git ls-files '*.yaml') $(git ls-files '*.yml')
