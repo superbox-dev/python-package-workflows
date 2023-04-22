@@ -2,6 +2,9 @@ name: Publish on PyPi
 
 on:
   workflow_call:
+    secrets:
+      PYPI_TEST_API_TOKEN:
+        required: true
 
 jobs:
   prepare_publish:
