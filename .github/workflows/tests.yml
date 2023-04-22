@@ -20,7 +20,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ needs.config.outputs.latest_python }}
-          cache: pip
       - name: Cache virtualenv for Python ${{ needs.config.outputs.latest_python }}
         uses: syphar/restore-virtualenv@v1
       - name: Check tag ${{ github.ref_name }}
@@ -50,7 +49,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python_version }}
-          cache: pip
       - name: Cache virtualenv for Python ${{ matrix.python_version }}
         uses: syphar/restore-virtualenv@v1
         id: cache_virtualenv
@@ -80,7 +78,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python_version }}
-          cache: pip
       - name: Cache virtualenv for Python ${{ matrix.python_version }}
         uses: syphar/restore-virtualenv@v1
       - name: Run unit tests
@@ -111,7 +108,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ needs.config.outputs.latest_python }}
-          cache: pip
       - name: Cache virtualenv for Python ${{ needs.config.outputs.latest_python }}
         uses: syphar/restore-virtualenv@v1
       - name: Audit packages
@@ -133,7 +129,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python_version }}
-          cache: pip
       - name: Cache virtualenv for Python ${{ matrix.python_version }}
         uses: syphar/restore-virtualenv@v1
       - name: Check code format with black
