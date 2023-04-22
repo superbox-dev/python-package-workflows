@@ -21,6 +21,7 @@ jobs:
         with:
           python-version: ${{ needs.config.outputs.latest_python }}
       - name: Check tag ${{ github.ref_name }}
+        if: !contains(github.ref_name, 'main') && !contains(github.ref_name, 'merge')
         run: |
           ref_name="${{ github.ref_name }}"
           tag_version="${ref_name/.dev/}"
