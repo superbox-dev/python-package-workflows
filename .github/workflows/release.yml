@@ -33,7 +33,7 @@ jobs:
           path: ${{ github.workspace }}/output
       - name: Move files to workspace root
         run: |
-          mv -pv output/* ${{ github.workspace }}/
+          mv -v output/* ${{ github.workspace }}/
       - name: Release output files
         uses: softprops/action-gh-release@v1
         with:
