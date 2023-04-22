@@ -39,9 +39,17 @@ jobs:
             **/${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
             **/${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
           # yamllint enable rule:line-length
-          # - name: Publish package on PyPi
-          #  uses: pypa/gh-action-pypi-publish@release/v1
-          #  with:
-          #    user: __token__
-          #    password: ${{ secrets.PYPI_API_TOKEN }}
-          #    packages-dir: output/dist
+      - name: Move python packages to /dist
+        # yamllint disable rule:line-length
+        run: |
+          mkdir -pv dist
+          mv -v ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz dist/
+          mv -v ${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl dist/
+        # yamllint enable rule:line-length
+        uses: actions/download-artifact@v3
+      - name: Publish package on PyPi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist
