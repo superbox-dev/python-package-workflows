@@ -27,23 +27,19 @@ jobs:
       - prepare_release
     runs-on: ubuntu-latest
     steps:
-      - name: Download compressed source file
+      - name: Download output files
         uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
-      - name: Download wheel file
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
+          path: ${{ github.workspace }}/output
       - name: Release output files
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}
           # yamllint disable rule:line-length
           files: |
-            ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
-            ${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
-            ${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
+            output/${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
+            output/${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
+            output/${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
           # yamllint enable rule:line-length
           # - name: Publish package on PyPi
           #  uses: pypa/gh-action-pypi-publish@release/v1
