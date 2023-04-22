@@ -27,9 +27,9 @@ jobs:
       - prepare_release
     runs-on: ubuntu-latest
     steps:
-      - name: Download output files
+      - name: Download files
         uses: actions/download-artifact@v3
-      - name: Release output files
+      - name: Release files
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}
