@@ -22,8 +22,8 @@ jobs:
           python-version: ${{ needs.config.outputs.latest_python }}
       - name: Check tag ${{ github.ref_name }}
         run: |
-          [[ "${{ github.ref_name }}"  == *main* ]] || true
-          [[ "${{ github.ref_name }}"  == *merge* ]] || true
+          [[ "${{ github.ref_name }}" == "main" ]] || exit 0
+          [[ "${{ github.ref_name }}" == */merge* ]] || exit 0
           
           ref_name="${{ github.ref_name }}"
           tag_version="${ref_name/.dev/}"
