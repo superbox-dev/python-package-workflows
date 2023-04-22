@@ -1,11 +1,11 @@
-name: Release
+name: Publish on PyPi
 
 on:
   workflow_call:
 
 jobs:
-  prepare_release:
-    name: Prepare release
+  prepare_publish:
+    name: Prepare publish
     runs-on: ubuntu-latest
     outputs:
       package_name: ${{ steps.package_vars.outputs.package_name }}
@@ -22,20 +22,23 @@ jobs:
           echo "package_version=$(python setup.py --version)" >> $GITHUB_OUTPUT
 
   release:
-    name: Release
+    name: Publish
     needs:
-      - prepare_release
+      - prepare_publish
     runs-on: ubuntu-latest
     steps:
       - name: Download files
         uses: actions/download-artifact@v3
-      - name: Release files
-        uses: softprops/action-gh-release@v1
+      - name: Move python packages to /dist
+        # yamllint disable rule:line-length
+        run: |
+          mkdir -pv dist
+          mv -v ${{ needs.prepare_publish.outputs.package_name }}-${{ needs.prepare_publish.outputs.package_version }}.tar.gz dist/
+          mv -v ${{ needs.prepare_publish.outputs.package_alternate_name }}-${{ needs.prepare_publish.outputs.package_version }}-py3-none-any.whl dist/
+        # yamllint enable rule:line-length
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          name: ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}
-          # yamllint disable rule:line-length
-          files: |
-            **/${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
-            **/${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
-            **/${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
-          # yamllint enable rule:line-length
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist
