@@ -20,8 +20,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ needs.config.outputs.latest_python }}
-      - name: Cache virtualenv for Python ${{ needs.config.outputs.latest_python }}
-        uses: syphar/restore-virtualenv@v1
       - name: Check tag ${{ github.ref_name }}
         run: |
           ref_name="${{ github.ref_name }}"
