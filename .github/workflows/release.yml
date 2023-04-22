@@ -35,10 +35,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
-      - name: Download IPK file
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
       - name: Release output files
         uses: softprops/action-gh-release@v1
         with:
