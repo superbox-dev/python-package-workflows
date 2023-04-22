@@ -36,6 +36,7 @@ jobs:
         # yamllint disable rule:line-length
         run: |
           mkdir -pv dist
+          ls -la .
           mv -v ${{ needs.prepare_publish.outputs.package_name }}-${{ needs.prepare_publish.outputs.package_version }}.tar.gz dist/
           mv -v ${{ needs.prepare_publish.outputs.package_alternate_name }}-${{ needs.prepare_publish.outputs.package_version }}-py3-none-any.whl dist/
         # yamllint enable rule:line-length
@@ -43,5 +44,5 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_TEST_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+          repository-url: https://test.pypi.org/legacy/
           verbose: True
