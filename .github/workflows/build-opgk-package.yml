@@ -25,9 +25,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ needs.config.outputs.latest_python }}
-      - name: Cache virtualenv for Python ${{ needs.config.outputs.latest_python }}
-        uses: syphar/restore-virtualenv@v1
-        id: cache_virtualenv
+          cache: pip
       - name: Download output files
         uses: actions/download-artifact@v3
         with:
