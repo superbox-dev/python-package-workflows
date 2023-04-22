@@ -23,6 +23,8 @@ jobs:
 
   release:
     name: Release
+    needs:
+      - prepare_release
     runs-on: ubuntu-latest
     steps:
       - name: Download output files
