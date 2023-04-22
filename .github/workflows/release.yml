@@ -30,19 +30,17 @@ jobs:
       - name: Download output files
         uses: actions/download-artifact@v3
         with:
-          path: ${{ github.workspace }}/output
-      - name: Move files to workspace root
-        run: |
-          mv -v output/* ${{ github.workspace }}/
+          name: test
+          path: output
       - name: Release output files
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}
           # yamllint disable rule:line-length
           files: |
-            ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
-            ${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
-            ${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
+            output/${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
+            output/${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
+            output/${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
           # yamllint enable rule:line-length
           # - name: Publish package on PyPi
           #  uses: pypa/gh-action-pypi-publish@release/v1
