@@ -30,7 +30,6 @@ jobs:
       - name: Download output files
         uses: actions/download-artifact@v3
         with:
-          name: test
           path: output
       - name: Release output files
         uses: softprops/action-gh-release@v1
