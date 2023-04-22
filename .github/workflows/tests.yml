@@ -24,7 +24,7 @@ jobs:
         run: |
           [[ "${{ github.ref_name }}" == "main" ]] || exit 0
           [[ "${{ github.ref_name }}" == */merge* ]] || exit 0
-          
+
           ref_name="${{ github.ref_name }}"
           tag_version="${ref_name/.dev/}"
           package_version="$(python setup.py --version)"
