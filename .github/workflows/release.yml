@@ -35,7 +35,7 @@ jobs:
           name: ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}
           # yamllint disable rule:line-length
           files: |
-            **/${{ github.workspace }}/${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
+            **/${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
             **/${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
             **/${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
           # yamllint enable rule:line-length
