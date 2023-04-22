@@ -46,7 +46,6 @@ jobs:
           mv -v ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz dist/
           mv -v ${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl dist/
         # yamllint enable rule:line-length
-        uses: actions/download-artifact@v3
       - name: Publish package on PyPi
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
