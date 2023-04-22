@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_name: ${{ steps.package_vars.outputs.package_name }}
+      package_alternate_name: ${{ steps.package_vars.outputs.package_alternate_name }}
       package_version: ${{ steps.package_vars.outputs.package_version }}
     steps:
       - name: Check out repository
@@ -17,6 +18,7 @@ jobs:
         id: package_vars
         run: |
           echo "package_name=$(python setup.py --name)" >> $GITHUB_OUTPUT
+          echo "package_alternate_name=$(echo $(python setup.py --name) | sed -r 's/-/_/g')" >> $GITHUB_OUTPUT
           echo "package_version=$(python setup.py --version)" >> $GITHUB_OUTPUT
 
   release:
@@ -30,12 +32,12 @@ jobs:
       - name: Release output files
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ needs.prepare_build.outputs.package_name }}-${{ needs.prepare_build.outputs.package_version }}
+          name: ${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}
           # yamllint disable rule:line-length
           files: |
-            ${{ github.workspace }}/output/*.tar.gz
-            ${{ github.workspace }}/output/*.whl
-            ${{ github.workspace }}/output/*.ipk
+            ${{ github.workspace }}/output/${{ needs.prepare_release.outputs.package_name }}-${{ needs.prepare_release.outputs.package_version }}.tar.gz
+            ${{ github.workspace }}/output/${{ needs.prepare_release.outputs.package_alternate_name }}-${{ needs.prepare_release.outputs.package_version }}-py3-none-any.whl
+            ${{ github.workspace }}/output/${{ needs.prepare_release.outputs.package_name }}_${{ needs.prepare_release.outputs.package_version }}_aarch64.ipk
           # yamllint enable rule:line-length
           # - name: Publish package on PyPi
           #  uses: pypa/gh-action-pypi-publish@release/v1
