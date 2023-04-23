@@ -28,4 +28,5 @@ jobs:
           files: |
             **/python-package/*
             **/binary-files/*
+            **/opkg-package/*
           # yamllint enable rule:line-length
