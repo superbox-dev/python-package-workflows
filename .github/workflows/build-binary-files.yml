@@ -93,4 +93,5 @@ jobs:
       - name: Upload compressed binary file
         uses: actions/upload-artifact@v3
         with:
+          name: binary-files
           path: ${{ matrix.binary-file }}-${{ inputs.package-version }}-arm64.tar.gz

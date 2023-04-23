@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Download package files
         uses: actions/download-artifact@v3
+        with:
+          path: .
 
       - name: Test
         run: |

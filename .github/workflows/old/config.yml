@@ -27,5 +27,5 @@ jobs:
       - name: Get latest Python version
         id: python
         run: |
-          python_version=$(echo '${{ steps.config.outputs.result }}' | jq -cr '.python_version|last')
+          python_versions=$(echo '${{ steps.config.outputs.result }}' | jq -cr '.python_versions|last')
           echo "latest_python=$python_version" >> $GITHUB_OUTPUT
