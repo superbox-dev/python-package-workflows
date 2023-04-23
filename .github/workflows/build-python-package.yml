@@ -6,12 +6,6 @@ on:
       latest-python-version:
         required: True
         type: string
-      package-name:
-        required: True
-        type: string
-      package-alternate-name:
-        required: True
-        type: string
       package-version:
         required: True
         type: string
