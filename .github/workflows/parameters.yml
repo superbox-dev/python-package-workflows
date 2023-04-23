@@ -45,6 +45,7 @@ jobs:
           import subprocess
           import sys
           import re
+          import json
 
           from os import environ
           from pathlib import Path
