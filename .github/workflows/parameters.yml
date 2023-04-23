@@ -44,7 +44,7 @@ jobs:
           from os import environ
           from pathlib import Path
 
-          parameters: dict = json.load(Path("${{ inputs.json }}").read_text())
+          parameters: dict = json.loads(Path("${{ inputs.json }}").read_text())
           python_version: list = parameters["python-version"]
           latest_python_version: str = python_version[-1]
           version_dev: bool = False
