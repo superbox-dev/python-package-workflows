@@ -20,10 +20,6 @@ jobs:
         with:
           path: .
 
-      - name: Test
-        run: |
-          ls -la .
-
       - name: Release files
         uses: softprops/action-gh-release@v1
         with:
@@ -31,4 +27,5 @@ jobs:
           # yamllint disable rule:line-length
           files: |
             **/python-package/*
+            **/binary-files/*
           # yamllint enable rule:line-length

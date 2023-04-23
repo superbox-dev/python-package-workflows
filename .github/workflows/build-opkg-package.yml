@@ -1,0 +1,67 @@
+name: Build OPKG package
+
+on:
+  workflow_call:
+    inputs:
+      latest-python-version:
+        required: True
+        type: string
+      package-name:
+        required: True
+        type: string
+      package-version:
+        required: True
+        type: string
+
+jobs:
+  build-opkg-package:
+    name: Build OPKG package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ inputs.latest-python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.latest-python-version }}
+
+      - name: Download binary files
+        uses: actions/download-artifact@v3
+        with:
+          name: binary-files
+
+      - name: Install opkg-utils
+        run: |
+          wget https://git.yoctoproject.org/opkg-utils/snapshot/opkg-utils-0.4.5.tar.gz
+          tar xzfv opkg-utils-0.4.5.tar.gz
+          make -C opkg-utils-0.4.5 PREFIX=${GITHUB_WORKSPACE} install-utils
+
+      - name: Build OPKG package
+        run: |
+          mkdir -pv ipk/{CONTROL,usr/local/bin}
+
+          (
+            echo "Package: ${{ inputs.package-name }}"
+            echo "Version: ${{ inputs.package-version }}"
+            echo "Architecture: aarch64"
+            echo "Maintainer: $(python setup.py --author)"
+            echo "Source: $(python setup.py --url)"
+            echo "Description: $(python setup.py --description)"
+            echo "License: $(python setup.py --license)"
+          ) > ipk/CONTROL/control
+
+          tar xzfv -C binary-files "binary-files/*.tar.gz"
+          rm -f "binary-files/*.tar.gz"
+          cp -v binary-files/* ipk/usr/local/bin/
+          sudo chown -R root:root ipk
+
+          mkdir -pv opkg-package
+          ${GITHUB_WORKSPACE}/bin/opkg-build -c ipk ${GITHUB_WORKSPACE}/opkg-package
+
+      - name: Upload OPKG package
+        uses: actions/upload-artifact@v3
+        with:
+          name: opkg-package
+          path: opkg-package
