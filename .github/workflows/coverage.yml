@@ -1,0 +1,49 @@
+name: Coverage
+
+on:
+  workflow_call:
+    inputs:
+      latest-python-version:
+        required: True
+        type: string
+
+jobs:
+  generate-coverage-badge:
+    name: Generate coverage badge
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: test
+        run: |
+          echo "${{ inputs.latest-python-version }}"
+
+      - name: Download coverage
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-python-${{ inputs.latest-python-version }}
+
+      - name: Create coverage badge
+        uses: tj-actions/coverage-badge-py@v2
+
+      - name: Verify coverage badge changed
+        uses: tj-actions/verify-changed-files@v14
+        id: changed-files
+        with:
+          files: coverage.svg
+
+      - name: Commit coverage badge
+        if: steps.changed-files.outputs.files_changed == 'true'
+        run: |
+          git config --local user.email "noreply@superbox.one"
+          git config --local user.name "Github Workflow"
+          git add coverage.svg
+          git commit -m "Updated coverage.svg"
+
+      - name: Push changes
+        if: steps.changed-files.outputs.files_changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

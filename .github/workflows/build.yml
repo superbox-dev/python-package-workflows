@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      latest-python-version:
+        required: True
+        type: string
+      package-name:
+        required: True
+        type: string
+      package-alternate-name:
+        required: True
+        type: string
+      package-version:
+        required: True
+        type: string
+
+jobs:
+  build-python-package:
+    name: Build python package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ inputs.latest-python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.latest-python-version }}
+
+      - name: Build package
+        run: |
+          python -m pip install --user build twine
+          PACKAGE_VERSION="${{ inputs.package-version }}" python -m build
+          ls -la dist/
+
+      - name: Upload package files
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-package
+          path: dist

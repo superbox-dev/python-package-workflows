@@ -1,0 +1,80 @@
+name: Parameters
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: True
+        default: 3.8 3.9 3.10 3.11
+        type: string
+    outputs:
+      python-version:
+        value: ${{ jobs.set-up-parameters.outputs.python-version }}
+      latest-python-version:
+        value: ${{ jobs.set-up-parameters.outputs.latest-python-version }}
+      package-name:
+        value: ${{ jobs.set-up-parameters.outputs.package-name}}
+      package-alternate-name:
+        value: ${{ jobs.set-up-parameters.outputs.package-alternate-name }}
+      package-version:
+        value: ${{ jobs.set-up-parameters.outputs.package-version }}
+
+jobs:
+  set-up-parameters:
+    name: Set up parameters
+    runs-on: ubuntu-latest
+
+    outputs:
+      python-version: ${{ steps.params.outputs.python-version }}
+      latest-python-version: ${{ steps.params.outputs.latest-python-version }}
+      package-name: ${{ steps.params.outputs.package-name }}
+      package-alternate-name: ${{ steps.params.outputs.package-alternate-name }}
+      package-version: ${{ steps.params.outputs.package-version }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Test
+        run: |
+          echo "${{ github.ref_name }}"
+          echo "${{ github.ref }}"
+          echo "${{ github.ref_type }}"
+
+      - name: Generate 'params'
+        id: params
+        shell: python
+        run: |
+          import subprocess
+          import re
+
+          from os import environ
+          from pathlib import Path
+
+          python_version = "${{ inputs.python-version }}".split(" ")
+          latest_python_version = python_version[-1]
+          version_dev = False
+
+          if re.match(r"\d{4}\.\d{1,2}\.dev.*", "${{ github.ref_name }}"):
+            version_dev = True
+
+          result_package_name = subprocess.run("python setup.py --name", shell=True, capture_output=True)
+          package_name = result_package_name.stdout.decode().strip()
+          package_alternate_name = package_name.replace("-", "_")
+
+          result_package_version = subprocess.run("python setup.py --version", shell=True, capture_output=True)
+          package_version = result_package_version.stdout.decode().strip()
+
+          if version_dev:
+            package_version += ".dev${{ github.run_number }}"
+
+          with open(environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as gho:
+              gho.write(
+                f"python-version={python_version!s}\n"
+                f"latest-python-version={latest_python_version!s}\n"
+                f"package-name={package_name!s}\n"
+                f"package-alternate-name={package_alternate_name!s}\n"
+                f"package-version={package_version!s}\n"
+              )
+
+          print(Path(environ["GITHUB_OUTPUT"]).read_text())

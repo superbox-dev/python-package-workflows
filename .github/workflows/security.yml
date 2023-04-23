@@ -1,0 +1,41 @@
+name: Security
+
+on:
+  workflow_call:
+    inputs:
+      latest-python-version:
+        required: True
+        type: string
+
+jobs:
+  security:
+    name: Audit packages
+    runs-on: ubuntu-latest
+    continue-on-error: True
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ inputs.latest-python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.latest-python-version }}
+
+      - name: Cache virtualenv for Python ${{ inputs.latest-python-version }}
+        uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+
+      - name: Cache pip download for Python ${{ matrix.python-version }}
+        uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Install requirements
+        run: |
+          pip install \
+            -r requirements.txt \
+            -r requirements-dev.txt
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Audit packages
+        run: pip-audit

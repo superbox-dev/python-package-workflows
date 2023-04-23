@@ -1,0 +1,65 @@
+name: Code analyse
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: True
+        type: string
+
+jobs:
+  code-analyse:
+    name: Code analyse using Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: False
+      matrix:
+        python-version: ${{ fromJson(inputs.python-version) }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache virtualenv for Python ${{ matrix.python-version }}
+        uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+
+      - name: Cache pip download for Python ${{ matrix.python-version }}
+        uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Install requirements
+        run: |
+          pip install \
+            -r requirements.txt \
+            -r requirements-dev.txt
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Check code format with black
+        run: |
+          black --version
+          black --diff --check $(git ls-files '*.py')
+
+      - name: Lint with flake8
+        run: |
+          flake8 --version
+          flake8 --show-source --statistics $(git ls-files '*.py')
+
+      - name: Lint with mypy
+        run: mypy $(git ls-files '*.py')
+
+      - name: Lint with pylint
+        run: |
+          pylint --version
+          pylint $(git ls-files '*.py')
+
+      - name: Lint with yamllint
+        run: |
+          yamllint --version
+          yamllint $(git ls-files '*.yaml') $(git ls-files '*.yml')
