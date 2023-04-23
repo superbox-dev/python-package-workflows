@@ -17,13 +17,10 @@ jobs:
     steps:
       - name: Download package files
         uses: actions/download-artifact@v3
-        with:
-          name: python-package
 
-      - name: Download binary files
-        uses: actions/download-artifact@v3
-        with:
-          name: '*-${{ inputs.package-version }}-arm64.tar.gz'
+      - name: Test
+        run: |
+          ls -la .
 
       - name: Release files
         uses: softprops/action-gh-release@v1
