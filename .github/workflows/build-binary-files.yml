@@ -44,7 +44,7 @@ jobs:
           path: nuitka-builder.tar
 
   build-binary-file:
-    name: Build ${{ matrix.console_scripts }} binary file
+    name: Build ${{ matrix.console-scripts }} binary file
     runs-on: ubuntu-latest
 
     needs:
@@ -52,7 +52,7 @@ jobs:
 
     strategy:
       matrix:
-        console_scripts: ${{ fromJson(inputs.console-scripts) }}
+        console-scripts: ${{ fromJson(inputs.console-scripts) }}
 
     steps:
       - name: Check out repository
