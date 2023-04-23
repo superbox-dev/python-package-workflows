@@ -3,7 +3,7 @@ name: Code analyse
 on:
   workflow_call:
     inputs:
-      python-version:
+      python-versions:
         required: True
         type: string
 
@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: False
       matrix:
-        python-version: ${{ fromJson(inputs.python-version) }}
+        python-version: ${{ fromJson(inputs.python-versions) }}
 
     steps:
       - name: Check out repository
