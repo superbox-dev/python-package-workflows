@@ -2,11 +2,6 @@ name: Parameters
 
 on:
   workflow_call:
-    inputs:
-      python-version:
-        required: True
-        default: 3.8 3.9 3.10 3.11
-        type: string
     outputs:
       python-version:
         value: ${{ jobs.set-up-parameters.outputs.python-version }}
@@ -41,5 +36,47 @@ jobs:
 
       - name: Generate 'params'
         id: params
-        shell: sh
-        run: python scripts/generate_params.py
+        shell: python
+        run: |
+          import subprocess
+          import sys
+          import re
+
+          from os import environ
+          from pathlib import Path
+
+          parameters_json: Path = Path("./.github/workflows/parameters.json")
+
+          if not parameters_json.exist():
+              print(f"Can't find {parameters_json.as_posix()}!")
+              sys.exit(1)
+
+          parameters: dict = json.load(parameters_json)
+
+          python_version: list = parameters["python-version"]
+          latest_python_version: str = python_version[-1]
+          version_dev: bool = False
+
+          if re.match(r"\d{4}\.\d{1,2}\.dev.*", "${{ github.ref_name }}"):
+              version_dev = True
+
+          result_package_name: subprocess.CompletedProcess = subprocess.run("python setup.py --name", shell=True, capture_output=True)
+          package_name: str = result_package_name.stdout.decode().strip()
+
+          result_package_version: subprocess.CompletedProcess = subprocess.run("python setup.py --version", shell=True, capture_output=True)
+          package_version: str = result_package_version.stdout.decode().strip()
+
+          if version_dev:
+              package_version += ".dev${{ github.run_number }}"
+
+          github_output: Path = Path(environ["GITHUB_OUTPUT"])
+
+          with github_output.open("a", encoding="utf-8") as gho:
+              gho.write(
+                  f"python-version={python_version!s}\n"
+                  f"latest-python-version={latest_python_version!s}\n"
+                  f"package-name={package_name!s}\n"
+                  f"package-version={package_version!s}\n"
+              )
+
+          print(github_output.read_text())
