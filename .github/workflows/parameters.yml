@@ -45,7 +45,9 @@ jobs:
           from pathlib import Path
 
           parameters: dict = json.loads(Path("${{ inputs.json }}").read_text())
-          python_version: list = parameters["python-version"]
+          python_version: list = parameters.get("python-version", ["3.11"])
+          binary_files: list = parameters.get("binary-files", [])
+
           latest_python_version: str = python_version[-1]
           version_dev: bool = False
 
@@ -68,7 +70,8 @@ jobs:
                   f"python-version={python_version!s}\n"
                   f"latest-python-version={latest_python_version!s}\n"
                   f"package-name={package_name!s}\n"
-                  f"package-version={package_version!s}\n"
+                  f"package-version={package_version!s}\n"#
+                  f"binary-files={binary_files!s}\n"
               )
 
           print(github_output.read_text())
