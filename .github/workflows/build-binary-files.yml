@@ -35,13 +35,13 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/arm64
           tags: nuitka-builder
-          outputs: type=docker,dest=/tmp/nuitka-builder.tar
+          outputs: type=docker,dest=nuitka-builder.tar
 
       - name: Upload docker image
         uses: actions/upload-artifact@v3
         with:
           name: nuitka-builder
-          path: /tmp/nuitka-builder.tar
+          path: nuitka-builder.tar
 
   build-binary-file:
     name: Build ${{ matrix.console_scripts }} binary file
