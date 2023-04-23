@@ -22,11 +22,20 @@ jobs:
         with:
           python-version: ${{ inputs.latest-python-version }}
 
+      - name: Cache virtualenv for Python ${{ inputs.latest-python-version }}
+        uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+
+      - name: Cache pip download for Python ${{ matrix.python-version }}
+        uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
       - name: Install requirements
         run: |
           pip install \
             -r requirements.txt \
             -r requirements-dev.txt
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
       - name: Audit packages
         run: pip-audit
