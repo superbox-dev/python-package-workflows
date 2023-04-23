@@ -12,6 +12,8 @@ on:
       package-version:
         required: True
         type: string
+      opkg-package:
+        type: string
 
 jobs:
   build-opkg-package:
@@ -39,7 +41,7 @@ jobs:
           tar xzfv opkg-utils-0.4.5.tar.gz
           make -C opkg-utils-0.4.5 PREFIX=${GITHUB_WORKSPACE} install-utils
 
-      - name: Build OPKG package
+      - name: Set up OPKG package
         run: |
           mkdir -pv ipk/{CONTROL,usr/local/bin}
 
@@ -53,11 +55,20 @@ jobs:
             echo "License: $(python setup.py --license)"
           ) > ipk/CONTROL/control
 
+      - name: Copy OPKG package files
+        if: inputs.opkg-package != ''
+        run: |
+          cp -rv ${{ inputs.opkg-package }}/* ipk/usr/local/
+
+      - name: Copy binary files
+        run: |
           tar xzfv -C binary-files "binary-files/*.tar.gz"
           rm -f "binary-files/*.tar.gz"
           cp -v binary-files/* ipk/usr/local/bin/
           sudo chown -R root:root ipk
 
+      - name: Build OPKG package
+        run: |
           mkdir -pv opkg-package
           ${GITHUB_WORKSPACE}/bin/opkg-build -c ipk ${GITHUB_WORKSPACE}/opkg-package
 

@@ -17,6 +17,8 @@ on:
         value: ${{ jobs.set-up-parameters.outputs.package-version }}
       binary-files:
         value: ${{ jobs.set-up-parameters.outputs.binary-files }}
+      opkg-package:
+        value: ${{ jobs.set-up-parameters.outputs.opkg-package }}
 
 jobs:
   set-up-parameters:
@@ -30,6 +32,7 @@ jobs:
       package-alternate-name: ${{ steps.params.outputs.package-alternate-name }}
       package-version: ${{ steps.params.outputs.package-version }}
       binary-files: ${{ steps.params.outputs.binary-files }}
+      opkg-package: ${{ steps.params.outputs.opkg-package }}
 
     steps:
       - name: Check out repository
@@ -50,6 +53,7 @@ jobs:
           parameters: dict = json.loads(Path("${{ inputs.json }}").read_text())
           python_versions: list = parameters.get("python-versions", ["3.11"])
           binary_files: list = parameters.get("binary-files", [])
+          opkg_package: str = parameters.get("opkg-package", "")
 
           latest_python_version: str = python_versions[-1]
           version_dev: bool = False
@@ -73,8 +77,9 @@ jobs:
                   f"python-versions={python_versions!s}\n"
                   f"latest-python-version={latest_python_version!s}\n"
                   f"package-name={package_name!s}\n"
-                  f"package-version={package_version!s}\n"#
+                  f"package-version={package_version!s}\n"
                   f"binary-files={binary_files!s}\n"
+                  f"opkg-package={opkg_package!s}\n"
               )
 
           print(github_output.read_text())

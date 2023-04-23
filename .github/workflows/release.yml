@@ -15,12 +15,12 @@ jobs:
     name: Release on GitHub
     runs-on: ubuntu-latest
     steps:
-      - name: Download package files
+      - name: Download files
         uses: actions/download-artifact@v3
         with:
           path: .
 
-      - name: Release files
+      - name: Release on GitHub
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ inputs.package-version }}

@@ -11,12 +11,12 @@ jobs:
     name: Publish on PyPi
     runs-on: ubuntu-latest
     steps:
-      - name: Download package files
+      - name: Download python package files
         uses: actions/download-artifact@v3
         with:
           name: python-package
 
-      - name: Publish package
+      - name: Publish on PyPi
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
