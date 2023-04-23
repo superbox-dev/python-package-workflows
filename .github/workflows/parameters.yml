@@ -32,12 +32,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Test
-        run: |
-          echo "${{ github.ref_name }}"
-          echo "${{ github.ref }}"
-          echo "${{ github.ref_type }}"
-
       - name: Generate 'params'
         id: params
         shell: python
@@ -50,9 +44,7 @@ jobs:
           from os import environ
           from pathlib import Path
 
-          parameters_json: Path = Path("${{ inputs.json }}")
-          parameters: dict = json.load(parameters_json)
-
+          parameters: dict = json.load(Path("${{ inputs.json }}").read_text())
           python_version: list = parameters["python-version"]
           latest_python_version: str = python_version[-1]
           version_dev: bool = False
