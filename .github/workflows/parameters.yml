@@ -2,6 +2,10 @@ name: Parameters
 
 on:
   workflow_call:
+    inputs:
+      json:
+        required: True
+        type: string
     outputs:
       python-version:
         value: ${{ jobs.set-up-parameters.outputs.python-version }}
@@ -45,12 +49,7 @@ jobs:
           from os import environ
           from pathlib import Path
 
-          parameters_json: Path = Path("./.github/workflows/parameters.json")
-
-          if not parameters_json.exist():
-              print(f"Can't find {parameters_json.as_posix()}!")
-              sys.exit(1)
-
+          parameters_json: Path = Path("${{ inputs.json }}")
           parameters: dict = json.load(parameters_json)
 
           python_version: list = parameters["python-version"]
