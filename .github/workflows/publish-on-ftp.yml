@@ -47,9 +47,9 @@ jobs:
 
       - name: Publish on FTP
         run: |
-          cp -pv opkg-package/* /mnt/${{ inputs.ftp-hostname }}/${{ ftp-publish-path }}
+          cp -pv opkg-package/* /mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}
 
       - name: Make new repository index
         run: |
-          cd /mnt/${{ inputs.ftp-hostname }}/${{ ftp-publish-path }}
+          cd /mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}
           ${GITHUB_WORKSPACE}/bin/opkg-make-index -p Packages .
