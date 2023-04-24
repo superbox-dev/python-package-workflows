@@ -47,6 +47,7 @@ jobs:
 
       - name: Publish on FTP
         run: |
+          mkdir -pv /mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}
           cp -pv opkg-package/* /mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}
 
       - name: Make new repository index
