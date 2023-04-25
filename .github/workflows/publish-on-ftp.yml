@@ -34,12 +34,6 @@ jobs:
           sudo apt update
           sudo apt install -y curlftpfs
 
-      # - name: Install opkg-utils
-      #   run: |
-      #     wget https://git.yoctoproject.org/opkg-utils/snapshot/opkg-utils-0.4.5.tar.gz
-      #     tar xzfv opkg-utils-0.4.5.tar.gz
-      #     make -C opkg-utils-0.4.5 PREFIX=${GITHUB_WORKSPACE} install-utils
-
       - name: Mount FTP
         run: |
           sudo mkdir -pv /mnt/${{ inputs.ftp-hostname }}
@@ -52,26 +46,23 @@ jobs:
 
       - name: Create package index
         run: |
-          cd /mnt/${{ inputs.ftp-hostname }}
-          mkdir -pv /mnt/${{ inputs.ftp-hostname }}/tmp
-          rm -rfv /mnt/${{ inputs.ftp-hostname }}/Packages*
+          packages="/mnt/${{ inputs.ftp-hostname }}"
+          tmp="${packages}/tmp"
 
-          for pkg in *.ipk; do \
-            tar xzfv "${pkg}" -C tmp; \
-            for control in tmp/control.tar.gz; do \
-              tar xzfv "${control}" -C tmp; \
-              echo "Size: $(stat -c %s ${pkg})" >> tmp/control; \
-              echo "SHA256sum: $(sha256sum ${pkg} | grep -o "^[^ ]*")" >> tmp/control; \
-              echo "Filename: ${pkg}" >> tmp/control; \
-              echo "SourceDateEpoch: $(date +%s)\n" >> tmp/control; \
-              cat tmp/control >> Packages; \
+          mkdir -pv "${tmp}"
+          rm -rfv "${packages}/Packages"*
+
+          for pkg in "${packages}/"*.ipk; do \
+            tar xzfv "${pkg}" -C "${tmp}"; \
+            for control in "${tmp}/control.tar.gz"; do \
+              tar xzfv "${control}" -C "${tmp}"; \
+              echo "Size: $(stat -c %s ${pkg})" >> "${tmp}/control"; \
+              echo "SHA256sum: $(sha256sum ${pkg} | grep -o "^[^ ]*")" >> "${tmp}/control"; \
+              echo "Filename: ${pkg}" >> "${tmp}/control"; \
+              echo "SourceDateEpoch: $(date +%s)\n" >> "${tmp}/control"; \
+              cat "${tmp}/control" >> "${packages}/Packages"; \
             done; \
           done
           
-          gzip -vk Packages
-          rm -rfv /mnt/${{ inputs.ftp-hostname }}/tmp
-
-      # - name: Make new repository index
-      #   run: |
-      #     cd /mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}
-      #     ${GITHUB_WORKSPACE}/bin/opkg-make-index -p Packages .
+          gzip -vk "${packages}/Packages"
+          rm -rfv "${tmp}"
