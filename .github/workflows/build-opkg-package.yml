@@ -62,7 +62,7 @@ jobs:
 
       - name: Copy binary files
         run: |
-          for f in binary-files/*.tar.gz; do tar xzfv "$f" -C binary-files; done
+          for f in binary-files/*.tar.gz; do tar xzfv "${f}" -C binary-files; done
           rm -fv binary-files/*.tar.gz
           cp -v binary-files/* ipk/usr/local/bin/
           sudo chown -R root:root ipk
