@@ -46,7 +46,7 @@ jobs:
 
       - name: Create package index
         run: |
-          packages="/mnt/${{ inputs.ftp-hostname }}"
+          packages="/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}"
           tmp="${packages}/tmp"
 
           mkdir -pv "${tmp}"
