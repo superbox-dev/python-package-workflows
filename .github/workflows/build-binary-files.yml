@@ -86,7 +86,7 @@ jobs:
 
       - name: Compress binary files
         run: |
-          tar -czvf \
+          tar czvf \
             ${{ matrix.binary-file }}-${{ inputs.package-version }}-arm64.tar.gz \
             ${{ matrix.binary-file }}
 

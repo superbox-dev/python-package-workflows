@@ -35,15 +35,9 @@ jobs:
           name: binary-files
           path: binary-files
 
-      - name: Install opkg-utils
-        run: |
-          wget https://git.yoctoproject.org/opkg-utils/snapshot/opkg-utils-0.4.5.tar.gz
-          tar xzfv opkg-utils-0.4.5.tar.gz
-          make -C opkg-utils-0.4.5 PREFIX=${GITHUB_WORKSPACE} install-utils
-
       - name: Set up OPKG package
         run: |
-          mkdir -pv ipk/{CONTROL,usr/local/bin}
+          mkdir -pv control
 
           (
             echo "Package: ${{ inputs.package-name }}"
@@ -53,24 +47,31 @@ jobs:
             echo "Source: $(python setup.py --url)"
             echo "Description: $(python setup.py --description)"
             echo "License: $(python setup.py --license)"
-          ) > ipk/CONTROL/control
+          ) > control/control
 
-      - name: Copy OPKG package files
+          echo "2.0" > debian-binary
+
+      - name: Added data from repository
         if: inputs.opkg-package != ''
         run: |
-          cp -rv ${{ inputs.opkg-package }}/* ipk/usr/local/
+          mkdir -pv data/usr/local/
+          cp -rv ${{ inputs.opkg-package }}/* data/usr/local/
 
-      - name: Copy binary files
+      - name: Added binary data
         run: |
+          mkdir -pv data/usr/local/bin/
           for f in binary-files/*.tar.gz; do tar xzfv "${f}" -C binary-files; done
           rm -fv binary-files/*.tar.gz
-          cp -v binary-files/* ipk/usr/local/bin/
-          sudo chown -R root:root ipk
+          cp -v binary-files/* data/usr/local/bin/
 
       - name: Build OPKG package
         run: |
+          cd control && tar czvf ../control.tar.gz .
+          cd data && tar czvf ../data.tar.gz .
+
+          tar czvf ${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk control.tar.gz data.tar.gz debian-binary
           mkdir -pv opkg-package
-          ${GITHUB_WORKSPACE}/bin/opkg-build -c ipk ${GITHUB_WORKSPACE}/opkg-package
+          mv -v *.ipk opkg-package
 
       - name: Upload OPKG package
         uses: actions/upload-artifact@v3
