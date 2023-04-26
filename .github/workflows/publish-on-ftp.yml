@@ -58,7 +58,7 @@ jobs:
       - name: Transfer package to FTP server
         run: |
           mkdir -pv "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
-          cp -pv opkg-package/* "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
+          cp -pv opkg-package/*.ipk "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
 
       - name: Create package index
         run: |
