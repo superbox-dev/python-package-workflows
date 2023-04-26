@@ -35,7 +35,7 @@ jobs:
       package-version: ${{ steps.params.outputs.package-version }}
       binary-files: ${{ steps.params.outputs.binary-files }}
       opkg-package: ${{ steps.params.outputs.opkg-package }}
-      version-dev: ${{ steps.params.outputs.version-dev }}
+      version-dev: ${{ steps.params.outputs.version-dev == 'True' }}
 
     steps:
       - name: Check out repository
