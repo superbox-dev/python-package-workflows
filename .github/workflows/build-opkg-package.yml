@@ -67,8 +67,8 @@ jobs:
 
       - name: Build OPKG package
         run: |
-          tar -C opkg-package/control -czvf control.tar.gz .          
-          tar -C opkg-package/data -czvf data.tar.gz .
+          tar -C opkg-package/control -czvf opkg-package/control.tar.gz .          
+          tar -C opkg-package/data -czvf opkg-package/data.tar.gz .
 
           sudo chown -R root:root opkg-package/*
 
