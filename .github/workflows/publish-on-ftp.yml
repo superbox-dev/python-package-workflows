@@ -54,19 +54,18 @@ jobs:
 
           mkdir -pv "${tmp}"
           mv -v "${packages}/"*.ipk "${tmp}"
-          rm -rfv "${packages}/Packages"*
 
           for pkg in "${tmp}/"*.ipk; do \
             sudo tar xzfv "${pkg}" -C "${tmp}"; \
             for control in "${tmp}/control.tar.gz"; do \
               tar xzfv "${control}" -C "${tmp}"; \
-              echo "Size: $(stat -c %s ${pkg})" >> "${tmp}/control"; \
-              echo "SHA256sum: $(sha256sum ${pkg} | grep -o "^[^ ]*")" >> "${tmp}/control"; \
-              echo "Filename: ${pkg}" >> "${tmp}/control"; \
-              echo "SourceDateEpoch: $(date +%s)\n" >> "${tmp}/control"; \
+              echo -e "Size: $(stat -c %s ${pkg})" >> "${tmp}/control"; \
+              echo -e "SHA256sum: $(sha256sum ${pkg} | grep -o "^[^ ]*")" >> "${tmp}/control"; \
+              echo -e "Filename: $(basename ${pkg})" >> "${tmp}/control"; \
+              echo -e "SourceDateEpoch: $(date +%s)\n" >> "${tmp}/control"; \
               cat "${tmp}/control" >> "${tmp}/Packages"; \
             done; \
           done
 
           gzip -vk "${tmp}/Packages"
-          mv "${tmp}/Packages"* ${packages}
+          mv -v "${tmp}/Packages"* ${packages}
