@@ -19,6 +19,8 @@ on:
         value: ${{ jobs.set-up-parameters.outputs.binary-files }}
       opkg-package:
         value: ${{ jobs.set-up-parameters.outputs.opkg-package }}
+      version-dev:
+        value: ${{ jobs.set-up-parameters.outputs.version-dev }}
 
 jobs:
   set-up-parameters:
@@ -33,6 +35,7 @@ jobs:
       package-version: ${{ steps.params.outputs.package-version }}
       binary-files: ${{ steps.params.outputs.binary-files }}
       opkg-package: ${{ steps.params.outputs.opkg-package }}
+      version-dev: ${{ steps.params.outputs.version-dev }}
 
     steps:
       - name: Check out repository
@@ -80,6 +83,7 @@ jobs:
                   f"package-version={package_version!s}\n"
                   f"binary-files={binary_files!s}\n"
                   f"opkg-package={opkg_package!s}\n"
+                  f"version-dev={version_dev!s}\n"
               )
 
           print(github_output.read_text())
