@@ -12,8 +12,6 @@ on:
       package-version:
         required: True
         type: string
-      opkg-package:
-        type: string
 
 jobs:
   build-opkg-package:
@@ -35,9 +33,9 @@ jobs:
           name: binary-files
           path: binary-files
 
-      - name: Set up OPKG package
+      - name: Create control file
         run: |
-          mkdir -pv control
+          mkdir -pv opkg-package/control
 
           (
             echo "Package: ${{ inputs.package-name }}"
@@ -47,31 +45,35 @@ jobs:
             echo "Source: $(python setup.py --url)"
             echo "Description: $(python setup.py --description)"
             echo "License: $(python setup.py --license)"
-          ) > control/control
+          ) > opkg-package/control/control
 
-          echo "2.0" > debian-binary
+          echo "2.0" > opkg-package/debian-binary
 
       - name: Added data from repository
-        if: inputs.opkg-package != ''
         run: |
-          mkdir -pv data/usr/local/
-          cp -rv ${{ inputs.opkg-package }}/* data/usr/local/
+          mkdir -pv opkg-package/data/usr/local/
+          [ -d "opkg/data" ] && cp -rv opkg/data/* opkg-package/data/usr/local/
 
       - name: Added binary data
         run: |
-          mkdir -pv data/usr/local/bin/
+          mkdir -pv opkg-package/data/usr/local/bin/
           for f in binary-files/*.tar.gz; do tar xzfv "${f}" -C binary-files; done
           rm -fv binary-files/*.tar.gz
-          cp -v binary-files/* data/usr/local/bin/
+          cp -v binary-files/* opkg-package/data/usr/local/bin/
+
+      - name: Create conffiles file
+        run: |
+          find opkg/data/etc -type f | sed 's/opkg\/data/\/usr\/local/g' > opkg-package/control/conffiles
 
       - name: Build OPKG package
         run: |
-          tar -C control -czvf control.tar.gz .
-          tar -C data -czvf data.tar.gz .
+          tar -C opkg-package/control -czvf control.tar.gz .          
+          tar -C opkg-package/data -czvf data.tar.gz .
 
-          mkdir -pv opkg-package
-          tar czvf \
-            opkg-package/${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk \
+          sudo chown -R root:root opkg-package/*
+
+          tar -C opkg-package -czvf \
+            ${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk \
             control.tar.gz data.tar.gz debian-binary
 
       - name: Upload OPKG package

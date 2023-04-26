@@ -18,7 +18,7 @@ on:
       version-dev:
         type: string
         default: 'false'
-        
+
     secrets:
       FTP_PASSWORD:
         required: True
@@ -56,7 +56,7 @@ jobs:
             ftp://${{ inputs.ftp-hostname }}:${{ inputs.ftp-port }} /mnt/${{ inputs.ftp-hostname }}
 
       - name: Transfer package to FTP server
-        run: |       
+        run: |
           mkdir -pv "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
           cp -pv opkg-package/* "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
 
@@ -75,7 +75,6 @@ jobs:
               echo -e "Size: $(stat -c %s ${pkg})" >> "${tmp}/control"; \
               echo -e "SHA256sum: $(sha256sum ${pkg} | grep -o "^[^ ]*")" >> "${tmp}/control"; \
               echo -e "Filename: $(basename ${pkg})" >> "${tmp}/control"; \
-              echo -e "SourceDateEpoch: $(date +%s)\n" >> "${tmp}/control"; \
               cat "${tmp}/control" >> "${tmp}/Packages"; \
             done; \
           done
