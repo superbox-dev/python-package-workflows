@@ -15,6 +15,10 @@ on:
       ftp-publish-path:
         required: True
         type: string
+      version-dev:
+        type: boolean
+        default: False
+        
     secrets:
       FTP_PASSWORD:
         required: True
@@ -34,22 +38,31 @@ jobs:
           sudo apt update
           sudo apt install -y curlftpfs
 
+      - name: Set repository suffix
+        run: |
+          echo "${{ inputs.version-dev }"
+          if [ "${{ inputs.version-dev }" != "true" ]; then
+            echo "repo-suffix=testing" >> $GITHUB_ENV
+          else
+            echo "repo-suffix=main" >> $GITHUB_ENV
+          fi
+
       - name: Mount FTP
         run: |
-          sudo mkdir -pv /mnt/${{ inputs.ftp-hostname }}
+          sudo mkdir -pv "/mnt/${{ inputs.ftp-hostname }}"
           sudo curlftpfs \
             -v \
             -o "ssl,no_verify_peer,user=${{ inputs.ftp-username }}:${{ secrets.FTP_PASSWORD }},allow_other,rw,gid=$(id -g),uid=$(id -u)" \
             ftp://${{ inputs.ftp-hostname }}:${{ inputs.ftp-port }} /mnt/${{ inputs.ftp-hostname }}
 
       - name: Transfer package to FTP server
-        run: |
-          mkdir -pv /mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}
-          cp -pv opkg-package/* /mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}
+        run: |       
+          mkdir -pv "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
+          cp -pv opkg-package/* "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
 
       - name: Create package index
         run: |
-          packages="/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}"
+          packages="/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
           tmp="${GITHUB_WORKSPACE}/tmp"
 
           mkdir -pv "${tmp}"
