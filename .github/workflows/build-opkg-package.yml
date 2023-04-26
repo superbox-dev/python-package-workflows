@@ -66,12 +66,13 @@ jobs:
 
       - name: Build OPKG package
         run: |
-          cd control && tar czvf ../control.tar.gz .
-          cd data && tar czvf ../data.tar.gz .
+          tar -C control -czvf control.tar.gz .
+          tar -C data -czvf data.tar.gz .
 
-          tar czvf ${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk control.tar.gz data.tar.gz debian-binary
           mkdir -pv opkg-package
-          mv -v *.ipk opkg-package
+          tar czvf \
+            opkg-package/${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk \
+            control.tar.gz data.tar.gz debian-binary
 
       - name: Upload OPKG package
         uses: actions/upload-artifact@v3
