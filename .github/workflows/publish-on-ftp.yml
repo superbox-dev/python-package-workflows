@@ -50,9 +50,13 @@ jobs:
       - name: Create package index
         run: |
           packages="/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}"
+          tmp_packages="/tmp/packages"
+
+          mkdir -pv "${tmp_packages}"
+          mv -v "${packages}/"*.ipk "${tmp_packages}"
           rm -rfv "${packages}/Packages"*
 
-          for pkg in "${packages}/"*.ipk; do \
+          for pkg in "${tmp_packages}/"*.ipk; do \
             tar xzfv "${pkg}" -C /tmp; \
             for control in /tmp/control.tar.gz; do \
               tar xzfv "${control}" -C /tmp; \
