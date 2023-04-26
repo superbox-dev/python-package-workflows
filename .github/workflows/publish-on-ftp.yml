@@ -16,8 +16,8 @@ on:
         required: True
         type: string
       version-dev:
-        type: boolean
-        default: False
+        type: string
+        default: 'false'
         
     secrets:
       FTP_PASSWORD:
