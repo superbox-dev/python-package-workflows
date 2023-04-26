@@ -67,17 +67,17 @@ jobs:
 
       - name: Build OPKG package
         run: |
-          tar -C opkg-package/control -czvf opkg-package/control.tar.gz .          
+          tar -C opkg-package/control -czvf opkg-package/control.tar.gz .
           tar -C opkg-package/data -czvf opkg-package/data.tar.gz .
 
           sudo chown -R root:root opkg-package/*
 
           tar -C opkg-package -czvf \
-            ${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk \
+            opkg-package/${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk \
             control.tar.gz data.tar.gz debian-binary
 
       - name: Upload OPKG package
         uses: actions/upload-artifact@v3
         with:
           name: opkg-package
-          path: opkg-package
+          path: opkg-package/*.ipk
