@@ -40,7 +40,7 @@ jobs:
 
       - name: Set repository suffix
         run: |
-          echo "${{ inputs.version-dev }"
+          echo "${{ inputs.version-dev }}"
           if [ "${{ inputs.version-dev }" != "true" ]; then
             echo "repo-suffix=testing" >> $GITHUB_ENV
           else
