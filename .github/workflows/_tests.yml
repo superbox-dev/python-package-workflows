@@ -1,4 +1,4 @@
-name: Checks
+name: Self code analyse
 
 on:
   workflow_dispatch:
