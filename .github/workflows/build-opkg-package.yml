@@ -67,10 +67,10 @@ jobs:
 
       - name: Build OPKG package
         run: |
+          sudo chown -R root:root opkg-package/*
+
           tar -C opkg-package/control -czvf opkg-package/control.tar.gz .
           tar -C opkg-package/data -czvf opkg-package/data.tar.gz .
-
-          sudo chown -R root:root opkg-package/*
 
           tar -C opkg-package -czvf \
             opkg-package/${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk \
