@@ -47,6 +47,10 @@ jobs:
             echo "License: $(python setup.py --license)"
           ) > opkg-package/control/control
 
+          if [[ -f opkg/control/control ]]; then
+            cat opkg/control/control >> opkg-package/control/control
+          fi
+
           echo "2.0" > opkg-package/debian-binary
 
       - name: Added data from repository
