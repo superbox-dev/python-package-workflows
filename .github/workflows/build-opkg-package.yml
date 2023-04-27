@@ -41,7 +41,7 @@ jobs:
             echo "Package: ${{ inputs.package-name }}"
             echo "Version: ${{ inputs.package-version }}"
             echo "Architecture: aarch64"
-            echo "Maintainer: $(python setup.py --author)"
+            echo "Maintainer: $(python setup.py --author) <$(python setup.py --author author_email)>"
             echo "Source: $(python setup.py --url)"
             echo "Description: $(python setup.py --description)"
             echo "License: $(python setup.py --license)"
