@@ -70,9 +70,9 @@ jobs:
           cp -v "${packages}/"*.ipk "${tmp}"
 
           for pkg in "${tmp}/"*.ipk; do \
-            sudo tar xzfv "${pkg}" -C "${tmp}"; \
+            sudo ar x "${pkg}" --output "${tmp}"; \
             for control in "${tmp}/control.tar.gz"; do \
-              tar xzfv "${control}" -C "${tmp}"; \
+              tar xzf "${control}" -C "${tmp}"; \
               echo -e "Size: $(stat -c %s ${pkg})" >> "${tmp}/control"; \
               echo -e "SHA256sum: $(sha256sum ${pkg} | grep -o "^[^ ]*")" >> "${tmp}/control"; \
               echo -e "Filename: $(basename ${pkg})\n" >> "${tmp}/control"; \
