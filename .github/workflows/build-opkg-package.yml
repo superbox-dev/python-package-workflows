@@ -51,34 +51,45 @@ jobs:
             cat opkg/control/control >> opkg-package/control/control
           fi
 
+          if [[ -f opkg/control/postinst ]]; then
+            cp -v opkg/control/postinst opkg-package/control/
+          fi
+
+          if [[ -f opkg/control/prerm ]]; then
+            cp -v opkg/control/prerm opkg-package/control/
+          fi
+
           echo "2.0" > opkg-package/debian-binary
 
       - name: Added data from repository
         run: |
-          mkdir -pv opkg-package/data/usr/local/
-          [ -d "opkg/data" ] && cp -rv opkg/data/* opkg-package/data/usr/local/
+          mkdir -pv opkg-package/data/
+          [ -d "opkg/data" ] && cp -rv opkg/data/* opkg-package/data/
 
       - name: Added binary data
         run: |
-          mkdir -pv opkg-package/data/usr/local/bin/
+          mkdir -pv opkg-package/data/usr/bin/
           for f in binary-files/*.tar.gz; do tar xzfv "${f}" -C binary-files; done
           rm -fv binary-files/*.tar.gz
-          cp -v binary-files/* opkg-package/data/usr/local/bin/
+          cp -v binary-files/* opkg-package/data/usr/bin/
 
       - name: Create conffiles file
         run: |
-          find opkg/data/etc -type f | sed 's/opkg\/data/\/usr\/local/g' > opkg-package/control/conffiles
+          find opkg/data/etc -type f | sed 's/opkg\/data\///g' > opkg-package/control/conffiles
 
       - name: Build OPKG package
         run: |
-          sudo chown -R root:root opkg-package/*
+          pushd opkg-package/control
+          tar --numeric-owner --group=0 --owner=0 -czf ../control.tar.gz .
+          popd
 
-          tar -C opkg-package/control -czvf opkg-package/control.tar.gz .
-          tar -C opkg-package/data -czvf opkg-package/data.tar.gz .
+          pushd opkg-package/data
+          tar --numeric-owner --group=0 --owner=0 -czf ../data.tar.gz .
+          popd
 
-          tar -C opkg-package -czvf \
-            opkg-package/${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk \
-            control.tar.gz data.tar.gz debian-binary
+          pushd opkg-package
+          ar rv ${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk control.tar.gz data.tar.gz debian-binary
+          popd
 
       - name: Upload OPKG package
         uses: actions/upload-artifact@v3
