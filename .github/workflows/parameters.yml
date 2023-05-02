@@ -55,7 +55,7 @@ jobs:
           python_versions: list = parameters.get("python-versions", ["3.11"])
           binary_files: list = []
 
-          cf = ConfigParser()
+          cf: ConfigParser = ConfigParser()
           cf.read("setup.cfg")
           
           if entry_points := cf.get("options.entry_points"):
