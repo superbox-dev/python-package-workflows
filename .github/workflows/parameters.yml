@@ -58,10 +58,11 @@ jobs:
           cf: ConfigParser = ConfigParser()
           cf.read("setup.cfg")
           
-          if entry_points := cf.get("options.entry_points", []):
-              for item in entry_points['console_scripts'].split("\n"):
-                  if item:
-                    binary_files.append(item.split("=")[0].strip())
+          if "options.entry_points" in cf.sections():
+          
+          for item in entry_points["options.entry_points"]["console_scripts"].split("\n"):
+              if item:
+                  binary_files.append(item.split("=")[0].strip())
 
           latest_python_version: str = python_versions[-1]
           version_dev: bool = False
