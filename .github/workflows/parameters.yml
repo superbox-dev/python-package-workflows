@@ -59,7 +59,7 @@ jobs:
           cf.read("setup.cfg")
           
           if "options.entry_points" in cf.sections():
-              for item in entry_points["options.entry_points"]["console_scripts"].split("\n"):
+              for item in cf["options.entry_points"]["console_scripts"].split("\n"):
                   if item:
                       binary_files.append(item.split("=")[0].strip())
 
