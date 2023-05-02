@@ -58,7 +58,7 @@ jobs:
           cf: ConfigParser = ConfigParser()
           cf.read("setup.cfg")
           
-          if entry_points := cf.get("options.entry_points"):
+          if entry_points := cf.get("options.entry_points", []):
               for item in entry_points['console_scripts'].split("\n"):
                   if item:
                     binary_files.append(item.split("=")[0].strip())
