@@ -47,12 +47,21 @@ jobs:
           import re
           import json
 
+          from configparser import ConfigParser
           from os import environ
-          from pathlib import Path
+          from pathlib import Path          
 
           parameters: dict = json.loads(Path("${{ inputs.json }}").read_text())
           python_versions: list = parameters.get("python-versions", ["3.11"])
-          binary_files: list = parameters.get("binary-files", [])
+          binary_files: list = []
+
+          cf = ConfigParser()
+          cf.read("setup.cfg")
+          
+          if entry_points := cf.get("options.entry_points"):
+              for item in entry_points['console_scripts'].split("\n"):
+                  if item:
+                    binary_files.append(item.split("=")[0].strip())
 
           latest_python_version: str = python_versions[-1]
           version_dev: bool = False
