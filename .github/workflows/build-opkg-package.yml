@@ -76,6 +76,7 @@ jobs:
       - name: Create conffiles file
         run: |
           find opkg/data/etc -type f | sed 's/opkg\/data\///g' > opkg-package/control/conffiles
+          find opkg/data/usr/local/etc -type f | sed 's/opkg\/data\///g' > opkg-package/control/conffiles
 
       - name: Build OPKG package
         run: |
