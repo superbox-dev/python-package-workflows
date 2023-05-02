@@ -68,10 +68,10 @@ jobs:
 
       - name: Added binary data
         run: |
-          mkdir -pv opkg-package/data/usr/bin/
+          mkdir -pv opkg-package/data/usr/local/bin/
           for f in binary-files/*.tar.gz; do tar xzfv "${f}" -C binary-files; done
           rm -fv binary-files/*.tar.gz
-          cp -v binary-files/* opkg-package/data/usr/bin/
+          cp -v binary-files/* opkg-package/data/usr/local/bin/
 
       - name: Create conffiles file
         run: |
