@@ -24,7 +24,7 @@ on:
         required: True
 
 jobs:
-  publish-on-pypi:
+  publish-on-ftp:
     name: Publish on FTP
     runs-on: ubuntu-latest
     steps:
