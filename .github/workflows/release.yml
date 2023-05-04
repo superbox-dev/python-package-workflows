@@ -14,6 +14,7 @@ jobs:
   release-on-github:
     name: Release on GitHub
     runs-on: ubuntu-latest
+
     steps:
       - name: Download files
         uses: actions/download-artifact@v3
