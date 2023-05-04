@@ -24,9 +24,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ inputs.package-version }}
-          # yamllint disable rule:line-length
           files: |
             **/python-package/*
             **/binary-files/*
             **/opkg-package/*
-          # yamllint enable rule:line-length

@@ -56,10 +56,12 @@ jobs:
             ftp://${{ inputs.ftp-hostname }}:${{ inputs.ftp-port }} /mnt/${{ inputs.ftp-hostname }}
 
       - name: Transfer package to FTP server
+        # yamllint disable rule:line-length
         run: |
           mkdir -pv "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
           rm -fv "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}/$(basename opkg-package/*.ipk | cut -d "_" -f 1)_"*
           cp -pv opkg-package/*.ipk "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
+        # yamllint enable rule:line-length
 
       - name: Create package index
         run: |
