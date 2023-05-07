@@ -23,11 +23,10 @@ jobs:
 
       - name: Check tag ${{ github.ref_name }}
         run: |
-          ref_name="${{ github.ref_name }}"
-          tag_version="${ref_name/.dev/}"
-          package_version="$(python setup.py --version)"
+          ref_name="${GITHUB_REF_NAME}"
+          package_version="v$(python setup.py --version)"
 
-          if [ "${tag_version}" != "${package_version}" ]; then
-            echo "Version number in package does not match tag! (${tag_version} vs. ${package_version})."
+          if [ "${GITHUB_REF_TYPE}" == "tag" ] && [ "${GITHUB_REF_NAME}" != "${package_version}" ]; then
+            echo "Version number in package does not match tag! (${GITHUB_REF_NAME} vs. ${package_version})."
             exit 1
           fi

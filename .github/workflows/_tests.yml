@@ -1,4 +1,4 @@
-name: Self code analyse
+name: _Self code analyse
 
 on:
   workflow_dispatch:
