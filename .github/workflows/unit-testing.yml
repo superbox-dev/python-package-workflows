@@ -36,29 +36,25 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install \
-            -r requirements.txt \
-            -r requirements-dev.txt
+          pip install .[lint,format,audit,tests]
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
       - name: Run unit tests
         run: |
           pytest \
-            --cov=src \
-            --cov-report=term-missing \
-            --junitxml=junit/test-results.xml \
-            --cov-report=xml \
-            -n auto
+            -n auto \
+            --cov-report term-missing \
+            --cov=src
 
       - name: Upload coverage
         uses: actions/upload-artifact@v3
         with:
           name: coverage-python-${{ matrix.python-version }}
-          path: .coverage
+          path: reports/.coverage
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
           name: test-results-python-${{ matrix.python-version }}
-          path: junit/test-results.xml
+          path: reports/test-results.xml
           if-no-files-found: error

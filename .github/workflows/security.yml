@@ -32,9 +32,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install \
-            -r requirements.txt \
-            -r requirements-dev.txt
+          pip install .[lint,format,audit,tests]
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
       - name: Audit packages
