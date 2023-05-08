@@ -19,9 +19,6 @@ on:
         value: ${{ jobs.set-up-parameters.outputs.binary-files }}
       version-dev:
         value: ${{ jobs.set-up-parameters.outputs.version-dev }}
-    secrets:
-      GIT_TOKEN:
-        required: True
 
 jobs:
   set-up-parameters:
