@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuite errors="0" failures="1" name="mypy" skips="0" tests="1" time="0.260">
+  <testcase classname="mypy" file="mypy" line="1" name="mypy-py3_8-darwin" time="0.260">
+    <failure message="mypy produced messages">.github/scripts/generate-params.py: note: In function "main":
+.github/scripts/generate-params.py:34:26: error: Missing type parameters for
+generic type "CompletedProcess"  [type-arg]
+        result_package_name: subprocess.CompletedProcess = subprocess.run(
+                             ^
+.github/scripts/generate-params.py:39:29: error: Missing type parameters for
+generic type "CompletedProcess"  [type-arg]
+        result_package_version: subprocess.CompletedProcess = subprocess.r...
+                                ^</failure>
+  </testcase>
+</testsuite>
