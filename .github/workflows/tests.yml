@@ -1,4 +1,4 @@
-name: _Self code analyse
+name: Code analyse
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Install requirements
-        run: pip install yamllint
+        run: pip install -r requirements.txt
 
       - name: Lint with yamllint
         run: |

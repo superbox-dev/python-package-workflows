@@ -18,7 +18,6 @@ on:
       version-dev:
         type: string
         default: 'false'
-
     secrets:
       FTP_PASSWORD:
         required: True
