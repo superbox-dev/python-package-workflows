@@ -1,4 +1,4 @@
-name: Code analyse
+name: _Code analyse
 
 on:
   workflow_dispatch:
