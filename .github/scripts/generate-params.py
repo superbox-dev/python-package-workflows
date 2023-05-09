@@ -53,8 +53,10 @@ class Parameters:
         return self.pyproject["project"]["name"]
 
     def get_package_version(self) -> str:
-        version_import: List[str] = self.pyproject["tool"]["setuptools"]["dynamic"]["version"]["attr"].split(".")
-        version = importlib.import_module(f"src.{''.join(version_import[0:-1])}").__version__
+        version_import: str = self.pyproject["tool"]["setuptools"]["dynamic"]["version"]["attr"].replace(
+            ".__version__", ""
+        )
+        version = importlib.import_module(f"src.{version_import}").__version__
 
         if self.is_dev_version():
             version += f".dev{self.github_run_number}"
