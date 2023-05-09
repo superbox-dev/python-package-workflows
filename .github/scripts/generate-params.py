@@ -25,7 +25,7 @@ class Parameters:
 
     @staticmethod
     def is_dev_version() -> bool:
-        return environ["GITHUB_TYPE"] != "tag"
+        return environ["GITHUB_REF_TYPE"] != "tag"
 
     @staticmethod
     def read_pyproject_toml() -> Dict[str, Any]:
