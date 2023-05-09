@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import importlib
 import json
 import re
 from os import environ
@@ -53,11 +52,8 @@ class Parameters:
         return self.pyproject["project"]["name"]
 
     def get_package_version(self) -> str:
-        version_import: str = self.pyproject["tool"]["setuptools"]["dynamic"]["version"]["attr"].replace(
-            ".__version__", ""
-        )
-        print(version_import)
-        version = importlib.import_module(f"src.{version_import}").__version__
+        version_file: Path = Path(f"src/{self.get_package_name().replace('-', '_')}/version.txt")
+        version: str = version_file.read_text(encoding="utf-8").replace("\n", "")
 
         if self.is_dev_version():
             version += f".dev{self.github_run_number}"
