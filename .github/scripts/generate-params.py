@@ -1,59 +1,84 @@
 #!/usr/bin/env python
 import argparse
-import subprocess
-import re
+import importlib
 import json
-
-from configparser import ConfigParser
+import re
 from os import environ
 from pathlib import Path
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Optional
+
+import toml
+
+
+class Parameters:
+    def __init__(self, inputs_json: str, github_ref_name: str, github_run_number: str):
+        self.parameters: Dict[str, Any] = json.loads(Path(inputs_json).read_text())
+        self.python_version = self.parameters.get("python-versions", ["3.11"])
+        self.github_ref_name: str = github_ref_name
+        self.github_run_number: str = github_run_number
+        self.pyproject: Dict[str, Any] = self.read_pyproject_toml()
+
+    def get_python_version(self):
+        return self.python_version
+
+    def get_latest_python_version(self):
+        return self.python_version[-1]
+
+    def is_dev_version(self) -> bool:
+        _is_dev_version: bool = False
+
+        if re.match(r"\d{4}\.\d{1,2}\.dev.*", self.github_ref_name):
+            _is_dev_version = True
+
+        return _is_dev_version
+
+    @staticmethod
+    def read_pyproject_toml() -> Dict[str, Any]:
+        content: str = Path("pyproject.toml").read_text()
+        return toml.loads(content)
+
+    def get_scripts(self) -> List[str]:
+        _scripts: List[str] = []
+        scripts: Optional[Dict[str, Any]] = self.pyproject["project"].get("scripts")
+
+        if scripts:
+            _scripts = list(scripts.keys())
+
+        return _scripts
+
+    def get_package_name(self) -> str:
+        return self.pyproject["project"]["name"]
+
+    def get_package_version(self) -> str:
+        version_import: List[str] = self.pyproject["tool"]["setuptools"]["dynamic"]["version"]["attr"].split(".")
+        version = importlib.import_module(f"src.{''.join(version_import[0:-1])}").__version__
+
+        if self.is_dev_version():
+            version += f".dev{self.github_run_number}"
+
+        return version
 
 
 def main(args: argparse.Namespace) -> None:
-    parameters: Dict[str, Any] = json.loads(Path(args.INPUTS_JSON).read_text())
-    python_versions: List[str] = parameters.get("python-versions", ["3.11"])
-    binary_files: List[str] = []
-
-    cf: ConfigParser = ConfigParser()
-    cf.read("setup.cfg")
-
-    if "options.entry_points" in cf.sections():
-        for item in cf["options.entry_points"]["console_scripts"].split("\n"):
-            if item:
-                binary_files.append(item.split("=")[0].strip())
-
-    latest_python_version: str = python_versions[-1]
-    version_dev: bool = False
-
-    if re.match(r"\d{4}\.\d{1,2}\.dev.*", args.GITHUB_REF_NAME):
-        version_dev = True
-
-    result_package_name: subprocess.CompletedProcess = subprocess.run(
-        "python setup.py --name", shell=True, capture_output=True
+    parameters = Parameters(
+        inputs_json=args.INPUTS_JSON,
+        github_ref_name=args.GITHUB_REF_NAME,
+        github_run_number=args.GITHUB_RUN_NUMBER,
     )
-    package_name: str = result_package_name.stdout.decode().strip()
-
-    result_package_version: subprocess.CompletedProcess = subprocess.run(
-        "python setup.py --version", shell=True, capture_output=True
-    )
-    package_version: str = result_package_version.stdout.decode().strip()
-
-    if version_dev:
-        package_version += f".dev{args.GITHUB_RUN_NUMBER}"
 
     github_output: Path = Path(environ["GITHUB_OUTPUT"])
 
     with github_output.open("a", encoding="utf-8") as gho:
         gho.write(
-            f"python-versions={python_versions!s}\n"
-            f"latest-python-version={latest_python_version!s}\n"
-            f"package-name={package_name!s}\n"
-            f"package-version={package_version!s}\n"
-            f"binary-files={binary_files!s}\n"
-            f"version-dev={version_dev!s}\n"
+            f"python-versions={parameters.get_python_version()!s}\n"
+            f"latest-python-version={parameters.get_latest_python_version()!s}\n"
+            f"package-name={parameters.get_package_name()!s}\n"
+            f"package-version={parameters.get_package_version()!s}\n"
+            f"binary-files={parameters.get_scripts()!s}\n"
+            f"version-dev={parameters.is_dev_version()!s}\n"
         )
 
     print(github_output.read_text())
@@ -64,6 +89,5 @@ if __name__ == "__main__":
     parser.add_argument("INPUTS_JSON")
     parser.add_argument("GITHUB_REF_NAME")
     parser.add_argument("GITHUB_RUN_NUMBER")
-    args: argparse.Namespace = parser.parse_args()
 
-    main(args)
+    main(args=parser.parse_args())
