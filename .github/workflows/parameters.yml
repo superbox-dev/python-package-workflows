@@ -44,6 +44,11 @@ jobs:
           repository: superbox-dev/python-package-workflows
           path: reusable-workflows
 
+      - name: Install packages
+        run: |
+          sudo apt update
+          sudo apt install -y python3-toml
+
       - name: Generate 'params'
         id: params
         run: |
