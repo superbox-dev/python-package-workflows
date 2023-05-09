@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import argparse
 import json
-import re
 from os import environ
 from pathlib import Path
 from typing import Any
@@ -13,11 +12,9 @@ import toml
 
 
 class Parameters:
-    def __init__(self, inputs_json: str, github_ref_name: str, github_run_number: str):
+    def __init__(self, inputs_json: str):
         self.parameters: Dict[str, Any] = json.loads(Path(inputs_json).read_text())
         self.python_version = self.parameters.get("python-versions", ["3.11"])
-        self.github_ref_name: str = github_ref_name
-        self.github_run_number: str = github_run_number
         self.pyproject: Dict[str, Any] = self.read_pyproject_toml()
 
     def get_python_version(self):
@@ -26,13 +23,9 @@ class Parameters:
     def get_latest_python_version(self):
         return self.python_version[-1]
 
-    def is_dev_version(self) -> bool:
-        _is_dev_version: bool = False
-
-        if re.match(r"\d{4}\.\d{1,2}\.dev.*", self.github_ref_name):
-            _is_dev_version = True
-
-        return _is_dev_version
+    @staticmethod
+    def is_dev_version() -> bool:
+        return environ["GITHUB_TYPE"] != "tag"
 
     @staticmethod
     def read_pyproject_toml() -> Dict[str, Any]:
@@ -56,7 +49,7 @@ class Parameters:
         version: str = version_file.read_text(encoding="utf-8").replace("\n", "")
 
         if self.is_dev_version():
-            version += f".dev{self.github_run_number}"
+            version += f".dev{environ['GITHUB_RUN_NUMBER']}"
 
         return version
 
@@ -64,8 +57,6 @@ class Parameters:
 def main(args: argparse.Namespace) -> None:
     parameters = Parameters(
         inputs_json=args.INPUTS_JSON,
-        github_ref_name=args.GITHUB_REF_NAME,
-        github_run_number=args.GITHUB_RUN_NUMBER,
     )
 
     github_output: Path = Path(environ["GITHUB_OUTPUT"])
@@ -86,7 +77,4 @@ def main(args: argparse.Namespace) -> None:
 if __name__ == "__main__":
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument("INPUTS_JSON")
-    parser.add_argument("GITHUB_REF_NAME")
-    parser.add_argument("GITHUB_RUN_NUMBER")
-
     main(args=parser.parse_args())
