@@ -56,6 +56,7 @@ class Parameters:
         version_import: str = self.pyproject["tool"]["setuptools"]["dynamic"]["version"]["attr"].replace(
             ".__version__", ""
         )
+        print(version_import)
         version = importlib.import_module(f"src.{version_import}").__version__
 
         if self.is_dev_version():
