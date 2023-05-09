@@ -52,5 +52,6 @@ jobs:
       - name: Generate 'params'
         id: params
         run: |
+          ls -la .
           ./reusable-workflows/.github/scripts/generate-params.py \
             "${{ inputs.json }}" "${GITHUB_REF_NAME}" "${GITHUB_RUN_NUMBER}"
