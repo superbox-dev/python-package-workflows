@@ -53,5 +53,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-results-python-${{ matrix.python-version }}
-          path: reports/test-results.xml
+          path: reports/pytest.xml
           if-no-files-found: error
