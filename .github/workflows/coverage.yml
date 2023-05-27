@@ -24,6 +24,7 @@ jobs:
 
       - name: Install requirements
         run: |
+          pip install .
           pip install coverage-badge
 
       - name: Download coverage
