@@ -33,7 +33,6 @@ jobs:
 
       - name: Create coverage badge
         run: |
-          ls -la reports
           ls -la .
           coverage-badge -f -o coverage.svg
 
