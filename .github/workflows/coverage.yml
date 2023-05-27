@@ -24,7 +24,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install coverage-badge coveragepy[toml]
+          pip install coverage-badge
 
       - name: Download coverage
         uses: actions/download-artifact@v3
@@ -33,7 +33,6 @@ jobs:
 
       - name: Create coverage badge
         run: |
-          ls -la .
           coverage-badge -f -o coverage.svg
 
       - name: Verify coverage badge changed
