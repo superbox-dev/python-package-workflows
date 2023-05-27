@@ -44,11 +44,6 @@ jobs:
           repository: superbox-dev/python-package-workflows
           path: reusable-workflows
 
-      - name: Install packages
-        run: |
-          sudo apt update
-          sudo apt install -y python3-toml
-
       - name: Get python version
         id: python
         run: |
@@ -71,6 +66,7 @@ jobs:
       - name: Install requirements
         run: |
           pip install .
+          pip install toml
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
       - name: Generate 'params'
