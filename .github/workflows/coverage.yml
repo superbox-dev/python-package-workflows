@@ -24,8 +24,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install .
-          pip install coverage-badge
+          pip install .[tests]
 
       - name: Download coverage
         uses: actions/download-artifact@v3

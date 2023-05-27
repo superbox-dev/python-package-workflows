@@ -29,7 +29,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install .[lint,format,audit,tests]
+          pip install .[lint,format]
 
       - name: Check code format with black
         run: |

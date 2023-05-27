@@ -32,7 +32,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install .[lint,format,audit,tests]
+          pip install .[tests]
 
       - name: Run unit tests
         run: |
