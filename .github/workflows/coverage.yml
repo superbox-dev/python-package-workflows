@@ -32,7 +32,8 @@ jobs:
           name: coverage-python-${{ inputs.latest-python-version }}
 
       - name: Create coverage badge
-        uses: tj-actions/coverage-badge-py@v2
+        run: |
+          coverage-badge -f -o coverage.svg
 
       - name: Verify coverage badge changed
         uses: tj-actions/verify-changed-files@v14
