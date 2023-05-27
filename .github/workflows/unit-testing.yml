@@ -3,6 +3,9 @@ name: Unit testing
 on:
   workflow_call:
     inputs:
+      package-name:
+        required: True
+        type: string
       python-versions:
         required: True
         type: string
@@ -33,10 +36,12 @@ jobs:
 
       - name: Run unit tests
         run: |
+          package_name="${{ inputs.package-name }}"
+          
           pytest \
             -n auto \
             --cov-report term-missing \
-            --cov=src
+            --cov=${package_name/-/_}
 
       - name: Upload coverage
         uses: actions/upload-artifact@v3
