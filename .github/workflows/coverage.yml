@@ -15,9 +15,16 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-      - name: test
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ steps.python.outputs.latest-python-version }}
+          cache: pip
+
+      - name: Install requirements
         run: |
-          echo "${{ inputs.latest-python-version }}"
+          pip install coveragepy[toml]
 
       - name: Download coverage
         uses: actions/download-artifact@v3
@@ -36,8 +43,8 @@ jobs:
       - name: Commit coverage badge
         if: steps.changed-files.outputs.files_changed == 'true'
         run: |
-          git config --local user.email "noreply@superbox.one"
-          git config --local user.name "Github Workflow"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add coverage.svg
           git commit -m "Updated coverage.svg"
 
