@@ -25,19 +25,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Cache virtualenv for Python ${{ inputs.latest-python-version }}
-        uses: syphar/restore-virtualenv@v1
-        id: cache-virtualenv
-
-      - name: Cache pip download for Python ${{ matrix.python-version }}
-        uses: syphar/restore-pip-download-cache@v1
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+          cache: pip
 
       - name: Install requirements
         run: |
           pip install .[lint,format,audit,tests]
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
       - name: Run unit tests
         run: |
