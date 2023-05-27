@@ -65,7 +65,7 @@ jobs:
       - name: Added data from repository
         run: |
           mkdir -pv opkg-package/data/
-          [ -d "opkg/data" ] && cp -rv opkg/data/* opkg-package/data/
+          [ -d "data/opkg/data" ] && cp -rv data/opkg/data/* opkg-package/data/
 
       - name: Added binary data
         run: |
@@ -76,8 +76,8 @@ jobs:
 
       - name: Create conffiles file
         run: |
-          find opkg/data/etc -type f | sed 's/opkg\/data\///g' > opkg-package/control/conffiles
-          find opkg/data/usr/local/etc -type f | sed 's/opkg\/data\///g' > opkg-package/control/conffiles
+          find data/opkg/data/etc -type f | sed 's/data\/opkg\/data\///g' > opkg-package/control/conffiles
+          find data/opkg/data/usr/local/etc -type f | sed 's/data\/opkg\/data\///g' > opkg-package/control/conffiles
 
       - name: Build OPKG package
         run: |
