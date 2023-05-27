@@ -44,7 +44,7 @@ jobs:
           repository: superbox-dev/python-package-workflows
           path: reusable-workflows
 
-      - name: Get python version
+      - name: Get Python version
         id: python
         run: |
           ./reusable-workflows/.github/scripts/get-python-version.py \
