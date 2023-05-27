@@ -55,16 +55,16 @@ jobs:
           ./reusable-workflows/.github/scripts/get-python-version.py \
             "${{ inputs.json }}"
 
-      - name: Set up Python ${{ steps.python.outputs.latest-python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ steps.python.outputs.latest-python-version }}
 
-      - name: Cache virtualenv for Python ${{ steps.python.outputs.latest-python-version }}
+      - name: Cache virtualenv for Python
         uses: syphar/restore-virtualenv@v1
         id: cache-virtualenv
 
-      - name: Cache pip download for Python ${{ steps.python.outputs.latest-python-version }}
+      - name: Cache pip download for Python
         uses: syphar/restore-pip-download-cache@v1
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
