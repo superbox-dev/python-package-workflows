@@ -15,7 +15,7 @@ on:
       ftp-publish-path:
         required: True
         type: string
-      version-dev:
+      is-dev-version:
         type: string
         default: 'false'
     secrets:
@@ -39,8 +39,8 @@ jobs:
 
       - name: Set repository suffix
         run: |
-          echo "${{ inputs.version-dev }}"
-          if [ "${{ inputs.version-dev }}" == "true" ]; then
+          echo "${{ inputs.is-dev-version }}"
+          if [ "${{ inputs.is-dev-version }}" == "true" ]; then
             echo "repo-suffix=testing" >> $GITHUB_ENV
           else
             echo "repo-suffix=main" >> $GITHUB_ENV

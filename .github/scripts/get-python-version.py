@@ -20,7 +20,7 @@ class PythonVersion:
 
 
 def main(args: argparse.Namespace) -> None:
-    parameters = PythonVersion(
+    parameters: PythonVersion = PythonVersion(
         inputs_json=args.INPUTS_JSON,
     )
 
