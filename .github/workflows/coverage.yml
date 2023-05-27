@@ -24,7 +24,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install coveragepy[toml]
+          pip install coverage-badge coveragepy[toml]
 
       - name: Download coverage
         uses: actions/download-artifact@v3
