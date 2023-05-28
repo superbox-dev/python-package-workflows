@@ -16,15 +16,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Check out reusable workflow repository
+        uses: actions/checkout@v3
+        with:
+          repository: superbox-dev/python-package-workflows
+          path: reusable-workflows
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ inputs.latest-python-version }}
           cache: pip
-
-      - name: Install requirements
-        run: |
-          pip install .[tests]
 
       - name: Download coverage
         uses: actions/download-artifact@v3
@@ -32,8 +34,7 @@ jobs:
           name: coverage-python-${{ inputs.latest-python-version }}
 
       - name: Create coverage badge
-        run: |
-          coverage-badge -f -o coverage.svg
+        run: ./reusable-workflows/.github/scripts/create-coverage-badge.sh
 
       - name: Verify coverage badge changed
         uses: tj-actions/verify-changed-files@v14
@@ -43,11 +44,7 @@ jobs:
 
       - name: Commit coverage badge
         if: steps.changed-files.outputs.files_changed == 'true'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add coverage.svg
-          git commit -m "Updated coverage.svg"
+        run: ./reusable-workflows/.github/scripts/commit-coverage-badge.sh
 
       - name: Push changes
         if: steps.changed-files.outputs.files_changed == 'true'

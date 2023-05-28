@@ -12,6 +12,18 @@ on:
       package-version:
         required: True
         type: string
+      package-maintainer:
+        required: True
+        type: string
+      package-source-url:
+        required: True
+        type: string
+      package-description:
+        required: True
+        type: string
+      package-license:
+        required: True
+        type: string
 
 jobs:
   build-opkg-package:
@@ -21,6 +33,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+
+      - name: Check out reusable workflow repository
+        uses: actions/checkout@v3
+        with:
+          repository: superbox-dev/python-package-workflows
+          path: reusable-workflows
 
       - name: Set up Python ${{ inputs.latest-python-version }}
         uses: actions/setup-python@v4
@@ -34,64 +52,8 @@ jobs:
           name: binary-files
           path: binary-files
 
-      - name: Create control file
-        run: |
-          mkdir -pv opkg-package/control
-
-          (
-            echo "Package: ${{ inputs.package-name }}"
-            echo "Version: ${{ inputs.package-version }}"
-            echo "Architecture: aarch64"
-            echo "Maintainer: $(python setup.py --author) <$(python setup.py --author author_email)>"
-            echo "Source: $(python setup.py --url)"
-            echo "Description: $(python setup.py --description)"
-            echo "License: $(python setup.py --license)"
-          ) > opkg-package/control/control
-
-          if [[ -f opkg/control/control ]]; then
-            cat opkg/control/control >> opkg-package/control/control
-          fi
-
-          if [[ -f opkg/control/postinst ]]; then
-            cp -v opkg/control/postinst opkg-package/control/
-          fi
-
-          if [[ -f opkg/control/prerm ]]; then
-            cp -v opkg/control/prerm opkg-package/control/
-          fi
-
-          echo "2.0" > opkg-package/debian-binary
-
-      - name: Added data from repository
-        run: |
-          mkdir -pv opkg-package/data/
-          [ -d "data/opkg/data" ] && cp -rv data/opkg/data/* opkg-package/data/
-
-      - name: Added binary data
-        run: |
-          mkdir -pv opkg-package/data/usr/local/bin/
-          for f in binary-files/*.tar.gz; do tar xzfv "${f}" -C binary-files; done
-          rm -fv binary-files/*.tar.gz
-          cp -v binary-files/* opkg-package/data/usr/local/bin/
-
-      - name: Create conffiles file
-        run: |
-          find data/opkg/data/etc -type f | sed 's/data\/opkg\/data\///g' > opkg-package/control/conffiles
-          find data/opkg/data/usr/local/etc -type f | sed 's/data\/opkg\/data\///g' > opkg-package/control/conffiles
-
       - name: Build OPKG package
-        run: |
-          pushd opkg-package/control
-          tar --numeric-owner --group=0 --owner=0 -czf ../control.tar.gz .
-          popd
-
-          pushd opkg-package/data
-          tar --numeric-owner --group=0 --owner=0 -czf ../data.tar.gz .
-          popd
-
-          pushd opkg-package
-          ar rv ${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk control.tar.gz data.tar.gz debian-binary
-          popd
+        run: ./reusable-workflows/.github/scripts/build-opkg-package.sh
 
       - name: Upload OPKG package
         uses: actions/upload-artifact@v3

@@ -27,59 +27,16 @@ jobs:
     name: Publish on FTP
     runs-on: ubuntu-latest
     steps:
+      - name: Check out reusable workflow repository
+        uses: actions/checkout@v3
+        with:
+          repository: superbox-dev/python-package-workflows
+          path: reusable-workflows
+
       - name: Download files
         uses: actions/download-artifact@v3
         with:
           path: .
 
-      - name: Install packages
-        run: |
-          sudo apt update
-          sudo apt install -y curlftpfs
-
-      - name: Set repository suffix
-        run: |
-          echo "${{ inputs.is-dev-version }}"
-          if [ "${{ inputs.is-dev-version }}" == "true" ]; then
-            echo "repo-suffix=testing" >> $GITHUB_ENV
-          else
-            echo "repo-suffix=main" >> $GITHUB_ENV
-          fi
-
-      - name: Mount FTP
-        run: |
-          sudo mkdir -pv "/mnt/${{ inputs.ftp-hostname }}"
-          sudo curlftpfs \
-            -v \
-            -o "ssl,no_verify_peer,user=${{ inputs.ftp-username }}:${{ secrets.FTP_PASSWORD }},allow_other,rw,gid=$(id -g),uid=$(id -u)" \
-            ftp://${{ inputs.ftp-hostname }}:${{ inputs.ftp-port }} /mnt/${{ inputs.ftp-hostname }}
-
-      - name: Transfer package to FTP server
-        # yamllint disable rule:line-length
-        run: |
-          mkdir -pv "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
-          rm -fv "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}/$(basename opkg-package/*.ipk | cut -d "_" -f 1)_"*
-          cp -pv opkg-package/*.ipk "/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
-        # yamllint enable rule:line-length
-
-      - name: Create package index
-        run: |
-          packages="/mnt/${{ inputs.ftp-hostname }}/${{ inputs.ftp-publish-path }}/${{ env.repo-suffix }}"
-          tmp="${GITHUB_WORKSPACE}/tmp"
-
-          mkdir -pv "${tmp}"
-          cp -v "${packages}/"*.ipk "${tmp}"
-
-          for pkg in "${tmp}/"*.ipk; do \
-            sudo ar x "${pkg}" --output "${tmp}"; \
-            for control in "${tmp}/control.tar.gz"; do \
-              tar xzf "${control}" -C "${tmp}"; \
-              echo -e "Size: $(stat -c %s ${pkg})" >> "${tmp}/control"; \
-              echo -e "SHA256sum: $(sha256sum ${pkg} | grep -o "^[^ ]*")" >> "${tmp}/control"; \
-              echo -e "Filename: $(basename ${pkg})\n" >> "${tmp}/control"; \
-              cat "${tmp}/control" >> "${tmp}/Packages"; \
-            done; \
-          done
-
-          gzip -vk "${tmp}/Packages"
-          mv -v "${tmp}/Packages"* ${packages}
+      - name: Publish on FTP
+        run: ./reusable-workflows/.github/scripts/publish-on-ftp.sh

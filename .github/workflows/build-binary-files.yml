@@ -72,24 +72,11 @@ jobs:
         with:
           name: nuitka-builder
 
-      - name: Load docker image
-        run: |
-          docker load --input nuitka-builder.tar
-          docker image ls -a
-
       - name: Build binary files
-        run: |
-          docker run --rm --privileged \
-            -e BUILDER_UID="$(id -u)" -e BUILDER_GID="$(id -g)" \
-            -v "${GITHUB_WORKSPACE}:/build" \
-            nuitka-builder /build/scripts/entry.sh ${{ matrix.binary-file }}
-          chmod +x ${{ matrix.binary-file }}.dist/${{ matrix.binary-file }}
+        run: ./reusable-workflows/.github/scripts/build-binary-files.sh
 
       - name: Compress binary files
-        run: |
-          tar czvf \
-            ${{ matrix.binary-file }}-${{ inputs.package-version }}-arm64.tar.gz \
-            ${{ matrix.binary-file }}
+        run: ./reusable-workflows/.github/scripts/compress-binary-files.sh
 
       - name: Upload compressed binary file
         uses: actions/upload-artifact@v3

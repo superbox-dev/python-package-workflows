@@ -15,6 +15,14 @@ on:
         value: ${{ jobs.set-up-parameters.outputs.package-name}}
       package-version:
         value: ${{ jobs.set-up-parameters.outputs.package-version }}
+      package-maintainer:
+        value: ${{ jobs.set-up-parameters.outputs.package-maintainer }}
+      package-source-url:
+        value: ${{ jobs.set-up-parameters.outputs.package-source-url }}
+      package-description:
+        value: ${{ jobs.set-up-parameters.outputs.package-description }}
+      package-license:
+        value: ${{ jobs.set-up-parameters.outputs.package-license }}
       binary-files:
         value: ${{ jobs.set-up-parameters.outputs.binary-files }}
       is-dev-version:
@@ -29,8 +37,11 @@ jobs:
       python-versions: ${{ steps.python.outputs.python-versions }}
       latest-python-version: ${{ steps.python.outputs.latest-python-version }}
       package-name: ${{ steps.params.outputs.package-name }}
-      package-alternate-name: ${{ steps.params.outputs.package-alternate-name }}
       package-version: ${{ steps.params.outputs.package-version }}
+      package-maintainer: ${{ steps.params.outputs.package-maintainer }}
+      package-source-url: ${{ steps.params.outputs.source-url }}
+      package-description: ${{ steps.params.outputs.package-description }}
+      package-license: ${{ steps.params.outputs.package-license }}
       binary-files: ${{ steps.params.outputs.binary-files }}
       is-dev-version: ${{ steps.params.outputs.is-dev-version == 'True' }}
 

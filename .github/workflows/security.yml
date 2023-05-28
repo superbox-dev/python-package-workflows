@@ -17,15 +17,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Check out reusable workflow repository
+        uses: actions/checkout@v3
+        with:
+          repository: superbox-dev/python-package-workflows
+          path: reusable-workflows
+
       - name: Set up Python ${{ inputs.latest-python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ inputs.latest-python-version }}
           cache: pip
 
-      - name: Install requirements
-        run: |
-          pip install .[lint,format,audit,tests]
-
       - name: Audit packages
-        run: pip-audit
+        run: ./reusable-workflows/.github/scripts/audit-packages.sh

@@ -39,6 +39,22 @@ class Parameters:
         version: str = self.pyproject["project"]["name"]
         return version
 
+    def get_package_maintainer(self) -> str:
+        maintainers: list[dict[str, str]] = self.pyproject["project"]["maintainers"]
+        return f"{maintainers[0]['name']} <{maintainers[0]['email']}>"
+
+    def get_package_source_url(self) -> str:
+        source_url: str = self.pyproject["project"]["urls"]["Source code"]
+        return source_url
+
+    def get_package_description(self) -> str:
+        description: str = self.pyproject["project"]["description"]
+        return description
+
+    def get_package_license(self) -> str:
+        license: dict = self.pyproject["project"]["license"]
+        return license["text"]
+
     @staticmethod
     def get_package_version(package_name: str) -> str:
         return metadata(package_name)["Version"]
@@ -56,6 +72,10 @@ def main(args: argparse.Namespace) -> None:
         gho.write(
             f"package-name={package_name!s}\n"
             f"package-version={parameters.get_package_version(package_name)!s}\n"
+            f"package-maintainer={parameters.get_package_maintainer()!s}\n"
+            f"package-source-url={parameters.get_package_source_url()!s}\n"
+            f"package-description={parameters.get_package_description()!s}\n"
+            f"package-license={parameters.get_package_license()!s}\n"
             f"binary-files={parameters.get_scripts()!s}\n"
             f"is-dev-version={parameters.is_dev_version()!s}\n"
         )
