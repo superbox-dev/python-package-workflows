@@ -37,7 +37,7 @@ jobs:
           cache: pip
 
       - name: Run unit tests
-        run: /reusable-workflows/.github/scripts/unit-testing.sh
+        run: ./reusable-workflows/.github/scripts/unit-testing.sh
         env:
           PACKAGE_NAME: ${{ inputs.package-name }}
 
