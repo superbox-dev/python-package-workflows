@@ -5,35 +5,28 @@ set -e
 sudo apt update
 sudo apt install -y curlftpfs
 
-is_dev_version="${{ inputs.is-dev-version }}"
-ftp_user="${{ inputs.ftp-username }}"
-ftp_password="${{ secrets.FTP_PASSWORD }}"
-ftp_hostname="${{ inputs.ftp-hostname }}"
-ftp_port="${{ inputs.ftp-port }}"
-ftp_publish_path="${{ inputs.ftp-publish-path }}"
-
-if [ "${is_dev_version}" == "true" ]; then
+if [ "${IS_DEV_VERSION}" == "true" ]; then
   repo_suffix="testing"
 else
   repo_suffix="main"
 fi
 
 function mount_ftp() {
-  sudo mkdir -pv "/mnt/${{ inputs.ftp-hostname }}"
+  sudo mkdir -pv "/mnt/${FTP_HOSTNAME}"
   sudo curlftpfs \
     -v \
-    -o "ssl,no_verify_peer,user=${ftp_user}:${ftp_password},allow_other,rw,gid=$(id -g),uid=$(id -u)" \
-    "ftp://${ftp_hostname}:${ftp_port} /mnt/${ftp_hostname}"
+    -o "ssl,no_verify_peer,user=${FTP_USER}:${FTP_PASSWORD},allow_other,rw,gid=$(id -g),uid=$(id -u)" \
+    "ftp://${FTP_HOSTNAME}:${FTP_PORT} /mnt/${FTP_HOSTNAME}"
 }
 
 function transfer_to_ftp {
-  mkdir -pv "/mnt/${ftp_hostname}/${ftp_publish_path}/${repo_suffix}"
-  rm -fv "/mnt/${ftp_hostname}/${ftp_publish_path}/${repo_suffix}/$(basename opkg-package/*.ipk | cut -d "_" -f 1)_"*
-  cp -pv opkg-package/*.ipk "/mnt/${ftp_hostname}/${ftp_publish_path}/${repo_suffix}"
+  mkdir -pv "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo_suffix}"
+  rm -fv "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo_suffix}/$(basename opkg-package/*.ipk | cut -d "_" -f 1)_"*
+  cp -pv opkg-package/*.ipk "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo_suffix}"
 }
 
 function create_package_index {
-  packages="/mnt/${ftp_hostname}/${ftp_publish_path}/${repo_suffix}"
+  packages="/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo_suffix}"
   tmp="${GITHUB_WORKSPACE}/tmp"
 
   mkdir -pv "${tmp}"

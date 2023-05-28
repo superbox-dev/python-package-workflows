@@ -40,3 +40,10 @@ jobs:
 
       - name: Publish on FTP
         run: ./reusable-workflows/.github/scripts/publish-on-ftp.sh
+        env:
+          IS_DEV_VERSION: ${{ inputs.is-dev-version }}
+          FTP_USER: ${{ inputs.ftp-username }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_HOSTNAME: ${{ inputs.ftp-hostname }}
+          FTP_PORT: ${{ inputs.ftp-port }}
+          FTP_PUBLISH_PATH: ${{ inputs.ftp-publish-path }}

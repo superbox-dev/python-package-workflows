@@ -59,6 +59,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Check out reusable workflow repository
+        uses: actions/checkout@v3
+        with:
+          repository: superbox-dev/python-package-workflows
+          path: reusable-workflows
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
@@ -74,9 +80,14 @@ jobs:
 
       - name: Build binary files
         run: ./reusable-workflows/.github/scripts/build-binary-files.sh
+        env:
+          BINARY_FILE: ${{ matrix.binary-file }}
 
       - name: Compress binary files
         run: ./reusable-workflows/.github/scripts/compress-binary-files.sh
+        env:
+          PACKAGE_VERSION: ${{ inputs.package-version }}
+          BINARY_FILE: ${{ matrix.binary-file }}
 
       - name: Upload compressed binary file
         uses: actions/upload-artifact@v3

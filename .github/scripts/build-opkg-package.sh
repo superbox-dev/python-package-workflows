@@ -6,13 +6,13 @@ function create_control_file {
   mkdir -pv opkg-package/control
 
   (
-    echo "Package: ${{ inputs.package-name }}"
-    echo "Version: ${{ inputs.package-version }}"
+    echo "Package: ${PACKAGE_NAME}"
+    echo "Version: ${PACKAGE_VERSION}"
     echo "Architecture: aarch64"
-    echo "Maintainer: ${{ inputs.package-maintainer }}"
-    echo "Source: ${{ inputs.package-source-url }}"
-    echo "Description: ${{ inputs.package-description }}"
-    echo "License: ${{ inputs.package-license }}"
+    echo "Maintainer: ${PACKAGE_MAINTAINER}"
+    echo "Source: ${PACKAGE_SOURCE_URL}"
+    echo "Description: ${PACKAGE_DESCRIPTION}"
+    echo "License: ${PACKAGE_LICENSE}"
   ) > opkg-package/control/control
 
   if [[ -f opkg/control/control ]]; then
@@ -59,7 +59,7 @@ function build_opkg_package {
   popd
 
   pushd opkg-package
-  ar rv "${{ inputs.package-name }}_${{ inputs.package-version }}_aarch64.ipk" control.tar.gz data.tar.gz debian-binary
+  ar rv "${PACKAGE_NAME}_${PACKAGE_VERSION}_aarch64.ipk" control.tar.gz data.tar.gz debian-binary
   popd
 }
 

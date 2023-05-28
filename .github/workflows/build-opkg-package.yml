@@ -54,6 +54,13 @@ jobs:
 
       - name: Build OPKG package
         run: ./reusable-workflows/.github/scripts/build-opkg-package.sh
+        env:
+          PACKAGE_NAME: ${{ inputs.package-name }}
+          PACKAGE_VERSION: ${{ inputs.package-version }}
+          PACKAGE_MAINTAINER: ${{ inputs.package-maintainer }}
+          PACKAGE_SOURCE_URL: ${{ inputs.package-source-url }}
+          PACKAGE_DESCRIPTION: ${{ inputs.package-description }}
+          PACKAGE_LICENSE: ${{ inputs.package-license }}
 
       - name: Upload OPKG package
         uses: actions/upload-artifact@v3
