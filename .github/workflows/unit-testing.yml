@@ -37,7 +37,9 @@ jobs:
           cache: pip
 
       - name: Run unit tests
-        run: ./reusable-workflows/.github/scripts/unit-testing.sh
+        run: |
+          PACKAGE_NAME="${{ inputs.package-name }}" \
+          ./reusable-workflows/.github/scripts/unit-testing.sh
 
       - name: Upload coverage
         uses: actions/upload-artifact@v3
