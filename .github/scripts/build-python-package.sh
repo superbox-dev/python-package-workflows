@@ -2,5 +2,5 @@
 
 set -e
 
-python -m pip install --user build
+pip install ".[build]"
 python -m build

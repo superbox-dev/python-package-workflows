@@ -2,5 +2,5 @@
 
 set -e
 
-pip install ".[lint,format,audit,tests]"
+pip install ".[build,lint,format,audit,tests]"
 pip-audit
