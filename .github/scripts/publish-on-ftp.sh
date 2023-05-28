@@ -16,7 +16,7 @@ function mount_ftp() {
   sudo curlftpfs \
     -v \
     -o "ssl,no_verify_peer,user=${FTP_USER}:${FTP_PASSWORD},allow_other,rw,gid=$(id -g),uid=$(id -u)" \
-    "ftp://${FTP_HOSTNAME}:${FTP_PORT} /mnt/${FTP_HOSTNAME}"
+    "ftp://${FTP_HOSTNAME}:${FTP_PORT}" "/mnt/${FTP_HOSTNAME}"
 }
 
 function transfer_to_ftp {
