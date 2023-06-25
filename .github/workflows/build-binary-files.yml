@@ -43,6 +43,7 @@ jobs:
         with:
           name: nuitka-builder
           path: nuitka-builder.tar
+          if-no-files-found: error
 
   build-binary-file:
     name: Build ${{ matrix.binary-file }} binary file
@@ -94,3 +95,4 @@ jobs:
         with:
           name: binary-files
           path: ${{ matrix.binary-file }}-${{ inputs.package-version }}-arm64.tar.gz
+          if-no-files-found: error

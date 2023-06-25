@@ -67,3 +67,4 @@ jobs:
         with:
           name: opkg-package
           path: opkg-package/*.ipk
+          if-no-files-found: error

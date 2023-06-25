@@ -4,12 +4,11 @@ import json
 from os import environ
 from pathlib import Path
 from typing import Any
-from typing import Dict
 
 
 class PythonVersion:
-    def __init__(self, inputs_json: str):
-        self.parameters: Dict[str, Any] = json.loads(Path(inputs_json).read_text())
+    def __init__(self, inputs_json: str) -> None:
+        self.parameters: dict[str, Any] = json.loads(Path(inputs_json).read_text())
         self.python_version: list[str] = self.parameters.get("python-versions", ["3.11"])
 
     def get_python_version(self) -> list[str]:

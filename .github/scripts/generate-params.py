@@ -5,30 +5,27 @@ from importlib.metadata import metadata
 from os import environ
 from pathlib import Path
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
 
 import toml
 
 
 class Parameters:
-    def __init__(self, inputs_json: str):
-        self.parameters: Dict[str, Any] = json.loads(Path(inputs_json).read_text())
-        self.pyproject: Dict[str, Any] = self.read_pyproject_toml()
+    def __init__(self, inputs_json: str) -> None:
+        self.parameters: dict[str, Any] = json.loads(Path(inputs_json).read_text())
+        self.pyproject: dict[str, Any] = self.read_pyproject_toml()
 
     @staticmethod
     def is_dev_version() -> bool:
         return environ["GITHUB_REF_TYPE"] != "tag"
 
     @staticmethod
-    def read_pyproject_toml() -> Dict[str, Any]:
+    def read_pyproject_toml() -> dict[str, Any]:
         content: str = Path("pyproject.toml").read_text()
         return toml.loads(content)
 
-    def get_scripts(self) -> List[str]:
-        _scripts: List[str] = []
-        scripts: Optional[Dict[str, Any]] = self.pyproject["project"].get("scripts")
+    def get_scripts(self) -> list[str]:
+        _scripts: list[str] = []
+        scripts: dict[str, Any] | None = self.pyproject["project"].get("scripts")
 
         if scripts:
             _scripts = list(scripts.keys())
@@ -52,8 +49,8 @@ class Parameters:
         return description
 
     def get_package_license(self) -> str:
-        license: dict = self.pyproject["project"]["license"]
-        return license["text"]
+        package_license: dict[str, str] = self.pyproject["project"]["license"]
+        return package_license["text"]
 
     @staticmethod
     def get_package_version(package_name: str) -> str:
