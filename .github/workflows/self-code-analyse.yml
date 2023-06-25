@@ -18,9 +18,16 @@ jobs:
           python-version: '3.11'
           cache: pip
 
-      - name: Install requirements
+      - name: Install packages
         run: |
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq upgrade
+          sudo apt install shellcheck
           pip install -r requirements-dev.txt
+
+      - name: Check shell scripts
+        run: |
+          for file in $(find . -type f -name "*.sh"); do shellcheck --format=gcc $file; done;
 
       - name: Lint with black
         run: |
