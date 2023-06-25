@@ -69,6 +69,7 @@ jobs:
 
       - name: Install requirements
         run: |
+          git tag
           pip install .
           pip install toml
           pip list
