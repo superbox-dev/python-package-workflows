@@ -27,7 +27,7 @@ jobs:
 
       - name: Check shell scripts
         run: |
-          for file in $(find . -type f -name "*.sh"); do shellcheck --format=gcc $file; done;
+          find . -type f -name "*.sh" -exec shellcheck --format=gcc {} \;
 
       - name: Lint with black
         run: |
