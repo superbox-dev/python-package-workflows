@@ -37,7 +37,7 @@ jobs:
         run: ./reusable-workflows/.github/scripts/create-coverage-badge.sh
 
       - name: Verify coverage badge changed
-        uses: tj-actions/verify-changed-files@v14
+        uses: tj-actions/verify-changed-files@v16
         id: changed-files
         with:
           files: coverage.svg
