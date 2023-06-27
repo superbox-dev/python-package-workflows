@@ -15,16 +15,16 @@ function create_control_file {
     echo "License: ${PACKAGE_LICENSE}"
   ) > opkg-package/control/control
 
-  if [[ -f opkg/control/control ]]; then
-    cat opkg/control/control >> opkg-package/control/control
+  if [[ -f data/opkg/control/control ]]; then
+    cat data/opkg/control/control >> opkg-package/control/control
   fi
 
-  if [[ -f opkg/control/postinst ]]; then
-    cp -v opkg/control/postinst opkg-package/control/
+  if [[ -f data/opkg/control/postinst ]]; then
+    cp -v data/opkg/control/postinst opkg-package/control/
   fi
 
-  if [[ -f opkg/control/prerm ]]; then
-    cp -v opkg/control/prerm opkg-package/control/
+  if [[ -f data/opkg/control/prerm ]]; then
+    cp -v data/opkg/control/prerm opkg-package/control/
   fi
 
   cat opkg-package/control/control
