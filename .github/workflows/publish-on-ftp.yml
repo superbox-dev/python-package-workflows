@@ -18,6 +18,9 @@ on:
       is-dev-version:
         type: string
         default: 'false'
+      repo-suffix:
+        type: string
+        default: ''
     secrets:
       FTP_PASSWORD:
         required: True
@@ -42,6 +45,7 @@ jobs:
         run: ./reusable-workflows/.github/scripts/publish-on-ftp.sh
         env:
           IS_DEV_VERSION: ${{ inputs.is-dev-version }}
+          REPO_SUFFIX: ${{ inputs.repo-suffix }}
           FTP_USER: ${{ inputs.ftp-username }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_HOSTNAME: ${{ inputs.ftp-hostname }}

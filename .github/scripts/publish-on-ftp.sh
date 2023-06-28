@@ -6,9 +6,9 @@ sudo apt update
 sudo apt install -y curlftpfs
 
 if [ "${IS_DEV_VERSION}" == "true" ]; then
-  repo_suffix="testing"
+  repo="testing${REPO_SUFFIX}"
 else
-  repo_suffix="main"
+  repo="main${REPO_SUFFIX}"
 fi
 
 function mount_ftp() {
@@ -20,13 +20,13 @@ function mount_ftp() {
 }
 
 function transfer_to_ftp {
-  mkdir -pv "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo_suffix}"
-  rm -fv "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo_suffix}/$(basename opkg-package/*.ipk | cut -d "_" -f 1)_"*
-  cp -pv opkg-package/*.ipk "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo_suffix}"
+  mkdir -pv "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo}"
+  rm -fv "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo}/$(basename opkg-package/*.ipk | cut -d "_" -f 1)_"*
+  cp -pv opkg-package/*.ipk "/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo}"
 }
 
 function create_package_index {
-  packages="/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo_suffix}"
+  packages="/mnt/${FTP_HOSTNAME}/${FTP_PUBLISH_PATH}/${repo}"
   tmp="${GITHUB_WORKSPACE}/tmp"
 
   mkdir -pv "${tmp}"
