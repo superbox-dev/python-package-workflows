@@ -6,10 +6,12 @@ sudo apt update
 sudo apt install -y curlftpfs
 
 if [ "${IS_DEV_VERSION}" == "true" ]; then
-  repo="testing${REPO_SUFFIX}"
+  repo="testing"
 else
-  repo="main${REPO_SUFFIX}"
+  repo="main"
 fi
+
+repo="${REPO_PATH}/${repo}"
 
 function mount_ftp() {
   sudo mkdir -pv "/mnt/${FTP_HOSTNAME}"
