@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out reusable workflow repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: superbox-dev/python-package-workflows
           path: reusable-workflows
