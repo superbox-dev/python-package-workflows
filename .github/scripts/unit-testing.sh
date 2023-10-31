@@ -2,6 +2,7 @@
 
 set -e
 
+pip install --upgrade pip
 pip install ".[tests]"
 
 pytest \

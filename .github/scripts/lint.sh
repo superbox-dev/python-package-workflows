@@ -2,6 +2,7 @@
 
 set -e
 
+pip install --upgrade pip
 pip install ".[lint,format,tests]"
 
 black --version
