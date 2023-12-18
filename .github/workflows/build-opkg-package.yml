@@ -47,7 +47,7 @@ jobs:
           cache: pip
 
       - name: Download binary files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: binary-files
           path: binary-files
