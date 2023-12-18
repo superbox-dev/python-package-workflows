@@ -63,7 +63,7 @@ jobs:
           PACKAGE_LICENSE: ${{ inputs.package-license }}
 
       - name: Upload OPKG package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: opkg-package
           path: opkg-package/*.ipk
