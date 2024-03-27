@@ -15,7 +15,7 @@ mypy $(git ls-files '*.py')
 
 ruff --version
 # shellcheck disable=SC2046
-ruff $(git ls-files '*.py')
+ruff check $(git ls-files '*.py')
 
 yamllint --version
 # shellcheck disable=SC2046

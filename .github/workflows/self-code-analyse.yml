@@ -41,7 +41,7 @@ jobs:
       - name: Lint with ruff
         run: |
           ruff --version
-          ruff $(git ls-files '*.py')
+          ruff check $(git ls-files '*.py')
 
       - name: Lint with yamllint
         run: |
