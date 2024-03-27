@@ -41,13 +41,13 @@ jobs:
           path: reusable-workflows
 
       - name: Set up Python ${{ inputs.latest-python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.latest-python-version }}
           cache: pip
 
       - name: Download binary files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: binary-files
           path: binary-files
@@ -63,7 +63,7 @@ jobs:
           PACKAGE_LICENSE: ${{ inputs.package-license }}
 
       - name: Upload OPKG package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: opkg-package
           path: opkg-package/*.ipk
