@@ -26,7 +26,7 @@ jobs:
           path: reusable-workflows
 
       - name: Set up Python ${{ inputs.latest-python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.latest-python-version }}
           cache: pip
