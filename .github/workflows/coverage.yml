@@ -31,13 +31,13 @@ jobs:
       - name: Download coverage
         uses: actions/download-artifact@v3
         with:
-          name: coverage-python-${{ inputs.latest-python-version }}
+          name: coverage-python-${{ matrix.python-version }}
 
       - name: Create coverage badge
         run: ./reusable-workflows/.github/scripts/create-coverage-badge.sh
 
       - name: Verify coverage badge changed
-        uses: tj-actions/verify-changed-files@v17
+        uses: tj-actions/verify-changed-files@v19
         id: changed-files
         with:
           files: coverage.svg

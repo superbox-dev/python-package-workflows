@@ -33,8 +33,8 @@ class Parameters:
         return _scripts
 
     def get_package_name(self) -> str:
-        version: str = self.pyproject["project"]["name"]
-        return version
+        package_name: str = self.pyproject["project"]["name"]
+        return package_name
 
     def get_package_maintainer(self) -> str:
         maintainers: list[dict[str, str]] = self.pyproject["project"]["maintainers"]
