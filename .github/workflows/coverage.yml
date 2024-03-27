@@ -31,7 +31,7 @@ jobs:
       - name: Download coverage
         uses: actions/download-artifact@v4
         with:
-          name: coverage-python-${{ matrix.python-version }}
+          name: coverage-python-${{ inputs.latest-python-version }}
 
       - name: Create coverage badge
         run: ./reusable-workflows/.github/scripts/create-coverage-badge.sh
